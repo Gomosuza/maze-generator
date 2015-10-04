@@ -47,7 +47,9 @@ namespace Engine.Rendering.Impl
 		{
 			float scale;
 			var font = GetFontAndScale(size, out scale);
-			var fontScale = font.MeasureString(text) * scale;
+
+			// no need for scale here, spriteBatch seems to apply it after doing origin calculations
+			var fontScale = font.MeasureString(text);
 			_entities.Add(new FontEntity2D(font, text, position, color, 0f, origin * fontScale, Vector2.One * scale, SpriteEffects.None, layerDepth));
 		}
 
@@ -58,7 +60,7 @@ namespace Engine.Rendering.Impl
 
 		public void DrawTexture(Texture2D texture, Vector2 position, Vector2 origin, float scale, Color color, float layerDepth = 0)
 		{
-			_entities.Add(new TextureEntity2D(texture, position, null, color, 0f, origin, scale, SpriteEffects.None, layerDepth));
+			_entities.Add(new TextureEntity2D(texture, position, null, color, 0f, origin * new Vector2(texture.Width, texture.Height), scale, SpriteEffects.None, layerDepth));
 		}
 
 		public void Render(GameTime dt)
