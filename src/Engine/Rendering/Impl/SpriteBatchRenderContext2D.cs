@@ -14,7 +14,6 @@ namespace Engine.Rendering.Impl
 	{
 		#region Fields
 
-		private readonly SpriteFont _defaultFont;
 		private readonly List<Drawable2D> _entities;
 		private readonly SpriteBatch _spriteBatch;
 
@@ -22,14 +21,8 @@ namespace Engine.Rendering.Impl
 
 		#region Constructors
 
-		public SpriteBatchRenderContext2D(IRenderContext attachedRenderContext, SpriteFont defaultFont)
+		public SpriteBatchRenderContext2D(IRenderContext attachedRenderContext)
 		{
-			if (defaultFont == null)
-			{
-				throw new ArgumentNullException(nameof(defaultFont));
-			}
-
-			_defaultFont = defaultFont;
 			RenderContext = attachedRenderContext;
 			_spriteBatch = new SpriteBatch(RenderContext.GraphicsDevice);
 			_entities = new List<Drawable2D>();
@@ -47,8 +40,9 @@ namespace Engine.Rendering.Impl
 
 		public void DrawString(string text, Vector2 position, Color color, FontSize size = FontSize.Medium, float layerDepth = 0f)
 		{
-			var scale = GetScale(size);
-			_entities.Add(new FontEntity2D(_defaultFont, text, position, color, 0f, Vector2.Zero, Vector2.One * scale, SpriteEffects.None, layerDepth));
+			float scale;
+			var font = GetFontAndScale(size, out scale);
+			_entities.Add(new FontEntity2D(font, text, position, color, 0f, Vector2.Zero, Vector2.One * scale, SpriteEffects.None, layerDepth));
 		}
 
 		public void DrawTexture(Texture2D texture, Vector2 position, Vector2 origin, float scale = 1f, float layerDepth = 0)
@@ -78,18 +72,25 @@ namespace Engine.Rendering.Impl
 			_spriteBatch.End();
 		}
 
-		private float GetScale(FontSize size)
+		private SpriteFont GetFontAndScale(FontSize size, out float scale)
 		{
 			switch (size)
 			{
 				case FontSize.Tiny:
-					return 0.2f;
+					scale = 0.5f; // 8
+					return StaticResourceCache.GetSmallFont(RenderContext.Content);
 				case FontSize.Small:
-					return 0.4f;
+					scale = 1f; // 16
+					return StaticResourceCache.GetSmallFont(RenderContext.Content);
 				case FontSize.Medium:
-					return 0.7f;
+					scale = 0.5f; // 32
+					return StaticResourceCache.GetLargeFont(RenderContext.Content);
 				case FontSize.Large:
-					return 1f;
+					scale = 0.75f; // 48
+					return StaticResourceCache.GetLargeFont(RenderContext.Content);
+				case FontSize.XLarge:
+					scale = 1f; // 64
+					return StaticResourceCache.GetLargeFont(RenderContext.Content);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(size), size, null);
 			}

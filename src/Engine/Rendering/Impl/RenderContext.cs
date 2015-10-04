@@ -17,7 +17,7 @@ namespace Engine.Rendering.Impl
 
 		#region Constructors
 
-		public RenderContext(GraphicsDeviceManager graphicsDeviceManager, RenderTarget2D renderTarget, ContentManager content, SpriteFont defaultFont)
+		public RenderContext(GraphicsDeviceManager graphicsDeviceManager, RenderTarget2D renderTarget, ContentManager content)
 		{
 			if (graphicsDeviceManager == null)
 			{
@@ -34,7 +34,7 @@ namespace Engine.Rendering.Impl
 
 			Content = content;
 
-			_renderContext2D = new SpriteBatchRenderContext2D(this, defaultFont);
+			_renderContext2D = new SpriteBatchRenderContext2D(this);
 			_renderContext3D = new RenderContext3D(this);
 
 			MeshCreator = new MeshCreator(GraphicsDevice);

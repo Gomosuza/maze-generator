@@ -20,11 +20,16 @@ namespace Engine.Rendering.Impl
 
 		#region Constructors
 
-		public RenderContext3D(IRenderContext attachedRenderContext)
+		/// <summary>
+		/// Creates a new instance of the 3D renderer.
+		/// </summary>
+		/// <param name="attachedRenderContext"></param>
+		/// <param name="cullMode">The cull mode to use for all 3D rendering.</param>
+		public RenderContext3D(IRenderContext attachedRenderContext, CullMode cullMode = CullMode.CullCounterClockwiseFace)
 		{
 			RenderContext = attachedRenderContext;
-			_fillState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace, FillMode = FillMode.Solid};
-			_wireFrameState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace, FillMode = FillMode.WireFrame, DepthBias = -0.1f};
+			_fillState = new RasterizerState {CullMode = cullMode, FillMode = FillMode.Solid};
+			_wireFrameState = new RasterizerState {CullMode = cullMode, FillMode = FillMode.WireFrame, DepthBias = -0.1f};
 
 			_effect = new BasicEffect(attachedRenderContext.GraphicsDevice);
 		}

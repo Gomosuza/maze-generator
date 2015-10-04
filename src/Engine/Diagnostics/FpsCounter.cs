@@ -56,7 +56,7 @@ namespace Engine.Diagnostics
 			_sampleIndex = ++_sampleIndex % _sampleBuffer.Length;
 
 			// initially we are filled with zeros so ignore those values
-			AverageFramesPerSecond = _sampleBuffer.Where(i => i != 0).Average(i => i);
+			AverageFramesPerSecond = _sampleBuffer.Where(i => i > 0).Average(i => i);
 		}
 
 		/// <summary>

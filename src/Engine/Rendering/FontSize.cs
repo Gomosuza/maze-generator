@@ -8,7 +8,8 @@ namespace Engine.Rendering
 		Tiny,
 		Small,
 		Medium,
-		Large
+		Large,
+		XLarge
 	}
 
 	#endregion

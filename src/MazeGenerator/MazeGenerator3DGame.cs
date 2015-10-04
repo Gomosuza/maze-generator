@@ -47,7 +47,6 @@ namespace MazeGenerator
 			base.Initialize();
 
 			FpsCounter.Enable(this);
-
 			Add(new WorldScene(RenderContext));
 		}
 

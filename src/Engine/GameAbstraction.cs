@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Engine.Input;
 using Engine.Rendering.Impl;
 
@@ -10,17 +9,14 @@ namespace Engine
 	{
 		#region Fields
 
-		private readonly string _defaultFontName;
-
-		private List<IComponent> _components;
+		private readonly List<IComponent> _components;
 
 		#endregion
 
 		#region Constructors
 
-		protected GameAbstraction(string defaultFontName = "DefaultFont")
+		protected GameAbstraction()
 		{
-			_defaultFontName = defaultFontName;
 			GraphicsDeviceManager = new GraphicsDeviceManager(this);
 			_components = new List<IComponent>();
 		}
@@ -67,9 +63,8 @@ namespace Engine
 		{
 			base.Initialize();
 			Content.RootDirectory = "Content";
-			var font = Content.Load<SpriteFont>(_defaultFontName);
 			// render to backbuffer by default
-			RenderContext = new RenderContext(GraphicsDeviceManager, null, Content, font);
+			RenderContext = new RenderContext(GraphicsDeviceManager, null, Content);
 		}
 
 		protected override void Update(GameTime gameTime)

@@ -90,6 +90,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="InternalContent\InternalEngineFont_Segoe UI_16.spritefont" />
+    <EmbeddedResource Include="InternalContent\InternalEngineFont_Segoe UI_16.xnb" />
+    <None Include="InternalContent\InternalEngineFont_Segoe UI_48.spritefont" />
+    <EmbeddedResource Include="InternalContent\InternalEngineFont_Segoe UI_64.xnb" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
