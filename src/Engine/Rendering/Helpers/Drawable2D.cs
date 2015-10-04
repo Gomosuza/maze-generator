@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Helpers
 {
+	/// <summary>
+	/// Helper for storing 2D draw calls.
+	/// </summary>
 	public abstract class Drawable2D
 	{
 		#region Constructors

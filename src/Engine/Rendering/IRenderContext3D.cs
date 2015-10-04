@@ -4,7 +4,7 @@ using Engine.Rendering.Meshes;
 namespace Engine.Rendering
 {
 	/// <summary>
-	/// The 3D rendercontext is responsible for rendering 3D content
+	/// The 3D rendercontext is responsible for rendering 3D content such as meshes and models.
 	/// </summary>
 	public interface IRenderContext3D
 	{
@@ -12,6 +12,9 @@ namespace Engine.Rendering
 
 		/// <summary>
 		/// The camera attached to this render context.
+		/// Must be set before the first render pass.
+		/// Can be swapped out at any time, however it is recommend to only change it once before rendering as swapping camera mid-rendering will often
+		/// result in confusing results.
 		/// </summary>
 		ICamera Camera { get; set; }
 
@@ -26,6 +29,7 @@ namespace Engine.Rendering
 
 		/// <summary>
 		/// Draws a mesh using the provided pen and brush.
+		/// Both are optional however one is at least required.
 		/// </summary>
 		/// <param name="mesh"></param>
 		/// <param name="world"></param>

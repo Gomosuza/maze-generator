@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering
 {
+	/// <summary>
+	/// Basic camera implementation.
+	/// </summary>
 	public sealed class Camera : ICamera
 	{
 		#region Fields

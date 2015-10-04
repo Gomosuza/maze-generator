@@ -2,11 +2,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Input
 {
+	/// <summary>
+	/// The mouse manager handles all mouse events.
+	/// </summary>
 	public class MouseManager
 	{
 		#region Constructors
 
-		public MouseManager(MouseState old, MouseState newState)
+		private MouseManager(MouseState old, MouseState newState)
 		{
 			OldState = old;
 			NewState = newState;
@@ -16,14 +19,25 @@ namespace Engine.Input
 
 		#region Properties
 
+		/// <summary>
+		/// The state from the current update.
+		/// </summary>
 		public MouseState NewState { get; }
 
+		/// <summary>
+		/// The state from the previous update.
+		/// </summary>
 		public MouseState OldState { get; }
 
 		#endregion
 
 		#region Methods
 
+		/// <summary>
+		/// Call to get a new manager for the current state.
+		/// </summary>
+		/// <param name="oldState"></param>
+		/// <returns></returns>
 		public static MouseManager GetCurrentState(MouseManager oldState)
 		{
 			var n = Mouse.GetState();

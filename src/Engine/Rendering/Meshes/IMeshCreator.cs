@@ -3,12 +3,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Meshes
 {
+	/// <summary>
+	/// The mesh creator helps you to create the correct mesh for your purposes.
+	/// It accepts either raw vertices or <see cref="IMeshDescription"/> which must previously be filled with information.
+	/// </summary>
 	public interface IMeshCreator
 	{
 		#region Methods
 
 		/// <summary>
 		/// Creates an empty dynamic mesh of the given type that allows data to be added to it later.
+		/// This type of mesh can be modified later.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="vertexType"></param>
@@ -18,7 +23,8 @@ namespace Engine.Rendering.Meshes
 		DynamicMesh CreateDynamicMesh(PrimitiveType type, Type vertexType, VertexDeclaration declaration, DynamicMeshUsage usage);
 
 		/// <summary>
-		/// Creates a dynamic mesh based on the provided vertices. Data can still be added to it later.
+		/// Creates a dynamic mesh based on the provided raw vertices.
+		/// This type of mesh can be modified later.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="type"></param>
@@ -29,7 +35,8 @@ namespace Engine.Rendering.Meshes
 			where T : struct, IVertexType;
 
 		/// <summary>
-		/// Creates a dynamic mesh based of the description. Data can still be added to it later.
+		/// Creates a dynamic mesh based of the description.
+		/// This type of mesh can be modified later.
 		/// </summary>
 		/// <param name="description"></param>
 		/// <param name="usage"></param>
@@ -47,7 +54,7 @@ namespace Engine.Rendering.Meshes
 			where T : struct, IVertexType;
 
 		/// <summary>
-		/// Creates a fixed mehs based of the vertices. It can no longer be modified.
+		/// Creates a fixed mehs based of the provided description. It can no longer be modified.
 		/// </summary>
 		/// <param name="description"></param>
 		/// <returns></returns>

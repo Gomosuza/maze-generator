@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Helpers
 {
+	/// <summary>
+	/// Helper to store 2D texture draw calls. Later rendering in a batch.
+	/// </summary>
 	public class TextureEntity2D : Drawable2D
 	{
 		#region Fields

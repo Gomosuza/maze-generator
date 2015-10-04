@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Helpers
 {
+	/// <summary>
+	/// Helper to store 2D font draw calls to later draw them all in one batch.
+	/// </summary>
 	public class FontEntity2D : Drawable2D
 	{
 		#region Fields

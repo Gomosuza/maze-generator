@@ -1,5 +1,8 @@
 namespace MazeGenerator
 {
+	/// <summary>
+	/// Entry point.
+	/// </summary>
 	internal class Program
 	{
 		#region Methods

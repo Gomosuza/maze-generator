@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Meshes
 {
+	/// <summary>
+	/// The mesh describes a vertex based 3D object.
+	/// </summary>
 	public abstract class Mesh
 	{
 		#region Properties
@@ -26,12 +29,20 @@ namespace Engine.Rendering.Meshes
 		#region Methods
 
 		/// <summary>
-		/// Attaches this mesh to the given device.
+		/// Allows the mesh to attach itself to the graphics device.
+		/// Called before <see cref="Draw"/>.
 		/// </summary>
 		internal abstract void Attach();
 
+		/// <summary>
+		/// Allows the mesh to dettach itself from the graphics device.
+		/// Called after <see cref="Draw"/>.
+		/// </summary>
 		internal abstract void Detach();
 
+		/// <summary>
+		/// Draw call. Allows the mesh to render itself.
+		/// </summary>
 		internal abstract void Draw();
 
 		#endregion

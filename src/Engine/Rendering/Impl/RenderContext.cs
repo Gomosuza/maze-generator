@@ -6,6 +6,9 @@ using Engine.Rendering.Meshes;
 
 namespace Engine.Rendering.Impl
 {
+	/// <summary>
+	/// Default render context implementation that uses a rendertarget as drawing target.
+	/// </summary>
 	public class RenderContext : IRenderContext
 	{
 		#region Fields
@@ -17,6 +20,12 @@ namespace Engine.Rendering.Impl
 
 		#region Constructors
 
+		/// <summary>
+		/// Render context implementation.
+		/// </summary>
+		/// <param name="graphicsDeviceManager"></param>
+		/// <param name="renderTarget">The render target to use. Set null if it should directly render to backbuffer.</param>
+		/// <param name="content"></param>
 		public RenderContext(GraphicsDeviceManager graphicsDeviceManager, RenderTarget2D renderTarget, ContentManager content)
 		{
 			if (graphicsDeviceManager == null)
@@ -72,7 +81,9 @@ namespace Engine.Rendering.Impl
 		{
 			GraphicsDevice.SetRenderTarget(RenderTarget);
 			_renderContext2D.Render(dt);
-			_renderContext3D.Render(dt);
+			// 3D renderer draws everything when called, only 2D renderer buffers
+
+			// this ensures that 2D is always drawn ontop of 3D
 		}
 
 		#endregion

@@ -5,6 +5,11 @@ using Engine.Rendering.Impl;
 
 namespace Engine
 {
+	/// <summary>
+	/// Abstraction over mongame provided game class.
+	/// Adds vital features (keyboard, mouse, content, rendering, etc.).
+	/// Use <see cref="Add"/>/<see cref="Remove"/> to add any further rendering elements.
+	/// </summary>
 	public abstract class GameAbstraction : Game
 	{
 		#region Fields
@@ -25,13 +30,28 @@ namespace Engine
 
 		#region Properties
 
+		/// <summary>
+		/// The one and only graphics device manager needed by monogame.
+		/// </summary>
 		public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
+		/// <summary>
+		/// Global keyboard manager.
+		/// Will be updated automatically each update.
+		/// </summary>
 		public KeyboardManager KeyboardManager { get; private set; }
 
+		/// <summary>
+		/// Global mouse manager.
+		/// Will be updated automatically each update.
+		/// </summary>
 		public MouseManager MouseManager { get; private set; }
 
-		public RenderContext RenderContext { get; private set; }
+		/// <summary>
+		/// Global render context set in <see cref="Initialize"/>.
+		/// If you want to use your own, just set it before your call to <see cref="Initialize"/>.
+		/// </summary>
+		public RenderContext RenderContext { get; protected set; }
 
 		#endregion
 
@@ -63,8 +83,11 @@ namespace Engine
 		{
 			base.Initialize();
 			Content.RootDirectory = "Content";
-			// render to backbuffer by default
-			RenderContext = new RenderContext(GraphicsDeviceManager, null, Content);
+			// render to backbuffer by default, but only if user didn't provide a rendercontext already
+			if (RenderContext == null)
+			{
+				RenderContext = new RenderContext(GraphicsDeviceManager, null, Content);
+			}
 		}
 
 		protected override void Update(GameTime gameTime)

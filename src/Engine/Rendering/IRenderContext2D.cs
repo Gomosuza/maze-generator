@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Engine.Rendering
 {
 	/// <summary>
-	/// The 3D rendercontext is responsible for rendering 2D content
+	/// The 2D rendercontext is responsible for rendering 2D content such as textures and fonts.
 	/// </summary>
 	public interface IRenderContext2D
 	{
@@ -22,12 +22,13 @@ namespace Engine.Rendering
 		/// <summary>
 		/// Draws the given text at the given position.
 		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="position"></param>
-		/// <param name="color"></param>
-		/// <param name="size"></param>
-		/// <param name="layerDepth"></param>
 		void DrawString(string text, Vector2 position, Color color, FontSize size = FontSize.Medium, float layerDepth = 0f);
+
+		/// <summary>
+		/// Draws the given text at the given position.
+		/// </summary>
+		/// <param name="origin">Origin in range of [0,0]:[1,1] (anchorpoint top-left:bottom-right) will automatically be multiplied with size of text.</param>
+		void DrawString(string text, Vector2 position, Vector2 origin, Color color, FontSize size = FontSize.Medium, float layerDepth = 0f);
 
 		/// <summary>
 		/// Draws a texture at the given location

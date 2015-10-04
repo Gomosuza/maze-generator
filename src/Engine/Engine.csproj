@@ -42,6 +42,7 @@
     <Compile Include="..\AssemblyInfo\AssemblyInfoInc.cs">
       <Link>Properties\AssemblyInfoInc.cs</Link>
     </Compile>
+    <Compile Include="Corner.cs" />
     <Compile Include="Datastructures\Quadtree\INode.cs" />
     <Compile Include="Datastructures\Quadtree\Leaf.cs" />
     <Compile Include="Datastructures\Quadtree\Node.cs" />
@@ -50,7 +51,6 @@
     <Compile Include="GameAbstraction.cs" />
     <Compile Include="Helpers\ColorConverter.cs" />
     <Compile Include="IComponent.cs" />
-    <Compile Include="Input\InputState.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />
     <Compile Include="Rendering\Brush.cs" />
@@ -66,8 +66,8 @@
     <Compile Include="Rendering\Meshes\DynamicMesh.cs" />
     <Compile Include="Rendering\Meshes\UpdatableDynamicMesh.cs" />
     <Compile Include="Rendering\Meshes\IMeshCreator.cs" />
-    <Compile Include="Rendering\Meshes\MeshCreator.cs" />
-    <Compile Include="Rendering\Meshes\MeshBuilder.cs" />
+    <Compile Include="Rendering\Impl\MeshCreator.cs" />
+    <Compile Include="Rendering\Meshes\MeshDescriptionBuilder.cs" />
     <Compile Include="Rendering\Meshes\Plane.cs" />
     <Compile Include="Rendering\Meshes\StaticMesh.cs" />
     <Compile Include="Rendering\Helpers\TextureEntity2D.cs" />

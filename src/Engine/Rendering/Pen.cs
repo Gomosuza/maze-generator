@@ -6,6 +6,7 @@ namespace Engine.Rendering
 {
 	/// <summary>
 	/// A pen that outlines a drawing.
+	/// This will generally result in the wireframe being drawn over whichever object it is attached to.
 	/// </summary>
 	public sealed class Pen
 	{

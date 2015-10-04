@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Engine.Rendering
 {
 	/// <summary>
-	/// Describes a material that defines the visual aspects of an object (mostly sprites).
+	/// Describes a material that defines the visual aspects of an object (mostly meshes).
 	/// There can be several kinds of materials.
 	/// </summary>
 	public abstract class Brush
@@ -27,6 +27,7 @@ namespace Engine.Rendering
 
 		/// <summary>
 		/// Prepares this brush for drawing.
+		/// Wil be called before rendering it if <see cref="IsPrepared"/> returned false.
 		/// </summary>
 		internal abstract void Prepare(IRenderContext renderContext);
 

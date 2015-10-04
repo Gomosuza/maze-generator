@@ -7,6 +7,10 @@ using Engine.Diagnostics;
 
 namespace MazeGenerator
 {
+	/// <summary>
+	/// Actual game implementation.
+	/// Handles loading, configuration, etc.
+	/// </summary>
 	public class MazeGenerator3DGame : GameAbstraction
 	{
 		#region Constructors

@@ -40,9 +40,15 @@ namespace Engine.Rendering.Impl
 
 		public void DrawString(string text, Vector2 position, Color color, FontSize size = FontSize.Medium, float layerDepth = 0f)
 		{
+			DrawString(text, position, Vector2.Zero, color, size, layerDepth);
+		}
+
+		public void DrawString(string text, Vector2 position, Vector2 origin, Color color, FontSize size = FontSize.Medium, float layerDepth = 0)
+		{
 			float scale;
 			var font = GetFontAndScale(size, out scale);
-			_entities.Add(new FontEntity2D(font, text, position, color, 0f, Vector2.Zero, Vector2.One * scale, SpriteEffects.None, layerDepth));
+			var fontScale = font.MeasureString(text) * scale;
+			_entities.Add(new FontEntity2D(font, text, position, color, 0f, origin * fontScale, Vector2.One * scale, SpriteEffects.None, layerDepth));
 		}
 
 		public void DrawTexture(Texture2D texture, Vector2 position, Vector2 origin, float scale = 1f, float layerDepth = 0)

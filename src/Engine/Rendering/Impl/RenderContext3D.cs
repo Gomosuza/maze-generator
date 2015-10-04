@@ -91,10 +91,6 @@ namespace Engine.Rendering.Impl
 			RenderContext.GraphicsDevice.RasterizerState = _fillState;
 		}
 
-		public void Render(GameTime dt)
-		{
-		}
-
 		private void SetupCamera(Matrix world)
 		{
 			_effect.World = world;

@@ -6,6 +6,9 @@ using Engine.Rendering;
 
 namespace Engine.Diagnostics
 {
+	/// <summary>
+	/// Helper component. Use static methods <see cref="Enable"/>/<see cref="Disable"/> to use it.
+	/// </summary>
 	public class FpsCounter : IComponent
 	{
 		#region Fields
@@ -17,6 +20,7 @@ namespace Engine.Diagnostics
 
 		private static FpsCounter _instance;
 
+		private readonly Corner _corner;
 		private readonly Color _fontColor;
 		private readonly float[] _sampleBuffer;
 
@@ -27,9 +31,10 @@ namespace Engine.Diagnostics
 
 		#region Constructors
 
-		private FpsCounter(Color? customColor)
+		private FpsCounter(Corner corner, Color color)
 		{
-			_fontColor = customColor ?? Color.Black;
+			_corner = corner;
+			_fontColor = color;
 			_sampleBuffer = new float[MaximumSamples];
 		}
 
@@ -37,6 +42,9 @@ namespace Engine.Diagnostics
 
 		#region Properties
 
+		/// <summary>
+		/// The average frames rendered over the last few seconds.
+		/// </summary>
 		private float AverageFramesPerSecond { get; set; }
 
 		#endregion
@@ -45,7 +53,31 @@ namespace Engine.Diagnostics
 
 		public void Render(IRenderContext renderContext, GameTime dt)
 		{
-			renderContext.RenderContext2D.DrawString($"FPS: {Math.Round(AverageFramesPerSecond):000}", Vector2.Zero, _fontColor, FontSize.Tiny);
+			Vector2 position;
+			Vector2 origin;
+			var screenSize = new Vector2(renderContext.GraphicsDeviceManager.PreferredBackBufferWidth, renderContext.GraphicsDeviceManager.PreferredBackBufferHeight);
+			switch (_corner)
+			{
+				case Corner.TopLeft:
+					position = Vector2.Zero;
+					origin = Vector2.Zero;
+					break;
+				case Corner.TopRight:
+					position = new Vector2(screenSize.X, 0);
+					origin = new Vector2(1, 0);
+					break;
+				case Corner.BottomRight:
+					position = screenSize;
+					origin = Vector2.One;
+					break;
+				case Corner.BottomLeft:
+					position = new Vector2(0, screenSize.Y);
+					origin = new Vector2(0, 1);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			renderContext.RenderContext2D.DrawString($"FPS: {Math.Round(AverageFramesPerSecond):000}", position, origin, _fontColor, FontSize.Tiny);
 		}
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
@@ -71,17 +103,20 @@ namespace Engine.Diagnostics
 
 		/// <summary>
 		/// Enables the FPS counter on the specific entity manager.
+		/// Optionally set the color to use and the location to use.
 		/// </summary>
 		/// <param name="manager"></param>
-		/// <param name="customFontColor"></param>
-		public static void Enable(GameAbstraction manager, Color? customFontColor = null)
+		/// <param name="corner">The corner to draw the FPS counter to.</param>
+		/// <param name="customFontColor">The color to use for drawing. Defaults to black.</param>
+		public static void Enable(GameAbstraction manager, Corner corner = Corner.TopLeft, Color? customFontColor = null)
 		{
 			if (_instance != null)
 			{
 				return;
 			}
 
-			manager.Add(_instance = new FpsCounter(customFontColor));
+			var color = customFontColor ?? Color.Black;
+			manager.Add(_instance = new FpsCounter(corner, color));
 		}
 
 		#endregion

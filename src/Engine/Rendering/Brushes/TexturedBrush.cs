@@ -32,11 +32,10 @@ namespace Engine.Rendering.Brushes
 		{
 			if (texture == null)
 			{
-				throw new ArgumentNullException();
+				throw new ArgumentNullException(nameof(texture));
 			}
 
 			_texture = texture;
-			_sampler = new SamplerState {Filter = TextureFilter.LinearMipPoint};
 		}
 
 		protected TexturedBrush()

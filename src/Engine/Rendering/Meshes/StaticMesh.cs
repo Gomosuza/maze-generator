@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Rendering.Meshes
 {
+	/// <summary>
+	/// The static mesh is a vertexbuffer based implementation for fast drawing.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	internal class StaticMesh<T> : Mesh
 		where T : struct, IVertexType
 	{

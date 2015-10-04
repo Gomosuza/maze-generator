@@ -8,6 +8,9 @@ using Engine.Rendering.Meshes;
 
 namespace MazeGenerator
 {
+	/// <summary>
+	/// The world scene renders a 3D world that can be explored by the user.
+	/// </summary>
 	public class WorldScene : IComponent
 	{
 		#region Fields
@@ -21,7 +24,7 @@ namespace MazeGenerator
 
 		public WorldScene(IRenderContext renderContext)
 		{
-			var meshBuilder = new MeshBuilder();
+			var meshBuilder = new MeshDescriptionBuilder();
 			meshBuilder.AddBox(new BoundingBox(Vector3.One * 10, Vector3.Zero));
 
 			_cuboid = renderContext.MeshCreator.CreateMesh(meshBuilder);

@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace Core.Extensions
 {
+	/// <summary>
+	/// Extensions related to <see cref="Assembly"/> class.
+	/// </summary>
 	public static class AssemblyExtensions
 	{
 		#region Methods
