@@ -1,0 +1,15 @@
+*.suo
+*.user
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Oo]bj/
+[Bb]in/
+.vs/
+ipch/
+*.opensdf
+*.sdf
+*.cachefile
+*.DotSettings.user
+**/packages/*
