@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Core;
 using Core.Extensions;
 using Engine;
@@ -39,7 +41,7 @@ namespace MazeGenerator
 			GraphicsDeviceManager.PreferredBackBufferHeight = h;
 			GraphicsDeviceManager.ApplyChanges();
 
-			IsMouseVisible = true;
+			IsMouseVisible = false;
 		}
 
 		#endregion
@@ -52,6 +54,22 @@ namespace MazeGenerator
 
 			FpsCounter.Enable(this);
 			Add(new WorldScene(RenderContext));
+		}
+
+		protected override void Update(GameTime gameTime)
+		{
+			if (!IsActive)
+			{
+				return;
+			}
+			base.Update(gameTime);
+#if DEBUG
+			// quickly exit while debugging
+			if (KeyboardManager.IsKeyDown(Keys.Escape))
+			{
+				Exit();
+			}
+#endif
 		}
 
 		#endregion

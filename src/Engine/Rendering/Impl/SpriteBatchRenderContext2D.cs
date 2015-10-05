@@ -63,7 +63,7 @@ namespace Engine.Rendering.Impl
 			_entities.Add(new TextureEntity2D(texture, position, null, color, 0f, origin * new Vector2(texture.Width, texture.Height), scale, SpriteEffects.None, layerDepth));
 		}
 
-		public void Render(GameTime dt)
+		public void Render()
 		{
 			_spriteBatch.Begin();
 

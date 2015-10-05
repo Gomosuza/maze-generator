@@ -45,6 +45,15 @@ namespace Engine.Input
 			return new KeyboardManager(old, n);
 		}
 
+		/// <summary>
+		/// Returns true if the specific key is currently pressed.
+		/// </summary>
+		/// <returns></returns>
+		public bool IsKeyDown(Keys key)
+		{
+			return NewState.IsKeyDown(key);
+		}
+
 		#endregion
 	}
 }

@@ -41,11 +41,20 @@ namespace Engine.Rendering
 		/// </summary>
 		IRenderContext3D RenderContext3D { get; }
 
+		#endregion
+
+		#region Methods
+
 		/// <summary>
-		/// Optional rendertarget (if null, the default back buffer will be used).
-		/// Defines where the output of this context ends up.
+		/// Must be called before any rendering can occur.
 		/// </summary>
-		RenderTarget2D RenderTarget { get; set; }
+		void Attach();
+
+		/// <summary>
+		/// Must be called after all rendering calls have been made.
+		/// This will either flush all remaining draw calls or clear the pipeline.
+		/// </summary>
+		void Detach();
 
 		#endregion
 	}

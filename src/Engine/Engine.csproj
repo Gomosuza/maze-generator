@@ -56,7 +56,7 @@
     <Compile Include="Rendering\Brush.cs" />
     <Compile Include="Rendering\Brushes\SolidColorBrush.cs" />
     <Compile Include="Rendering\Brushes\TexturedBrush.cs" />
-    <Compile Include="Rendering\Camera.cs" />
+    <Compile Include="Rendering\FirstPersonCamera.cs" />
     <Compile Include="Rendering\FontSize.cs" />
     <Compile Include="Rendering\Helpers\FontEntity2D.cs" />
     <Compile Include="Rendering\Meshes\DynamicMeshUsage.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="Rendering\Meshes\StaticMesh.cs" />
     <Compile Include="Rendering\Helpers\TextureEntity2D.cs" />
     <Compile Include="Rendering\ICamera.cs" />
-    <Compile Include="Rendering\Impl\RenderContext.cs" />
+    <Compile Include="Rendering\Impl\RenderTargetBasedRenderContext.cs" />
     <Compile Include="Rendering\Impl\SpriteBatchRenderContext2D.cs" />
     <Compile Include="Rendering\Impl\RenderContext3D.cs" />
     <Compile Include="Rendering\IRenderContext.cs" />

@@ -10,19 +10,6 @@ namespace Engine.Rendering
 	{
 		#region Properties
 
-		/// <summary>
-		/// The look-at-position.
-		/// Marks where the center of the screen looks at.
-		/// Note that changing it will also change the position as the distance between the two is fixed for any given camera.
-		/// </summary>
-		Vector3 LookAt { get; set; }
-
-		/// <summary>
-		/// The position of the camera.
-		/// Note that changing it will also change the look at as the distance between the two is fixed for any given camera.
-		/// </summary>
-		Vector3 Position { get; set; }
-
 		Matrix Projection { get; }
 
 		Matrix View { get; }
@@ -32,20 +19,20 @@ namespace Engine.Rendering
 		#region Methods
 
 		/// <summary>
-		/// Calculates the distance-to the camera for the given point.
+		/// Calculates the distance to the camera for the given point.
 		/// </summary>
 		/// <returns></returns>
 		float DistanceToCamera(Vector3 world);
 
 		/// <summary>
-		/// Calculates the distance-to the camera for the given point.
+		/// Calculates the squared distance to the camera for the given point (faster than <see cref="DistanceToCamera"/>.
 		/// </summary>
 		/// <returns></returns>
 		float DistanceToCameraSquared(Vector3 world);
 
 		/// <summary>
-		/// Calculates a ray that travels from the far plane to the camera's
-		/// position that contains the given screen-space-point.
+		/// Calculates a ray that travels from the camera position
+		/// to the far plane that contains the given screen-space-point.
 		/// </summary>
 		/// <returns></returns>
 		Ray ScreenToWorld(Vector2 screen);

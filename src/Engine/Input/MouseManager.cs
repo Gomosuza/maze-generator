@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Input
@@ -9,10 +10,11 @@ namespace Engine.Input
 	{
 		#region Constructors
 
-		private MouseManager(MouseState old, MouseState newState)
+		private MouseManager(MouseState old, MouseState newState, Point oldMousePosition)
 		{
 			OldState = old;
 			NewState = newState;
+			PositionDelta = (NewState.Position - oldMousePosition).ToVector2();
 		}
 
 		#endregion
@@ -29,6 +31,11 @@ namespace Engine.Input
 		/// </summary>
 		public MouseState OldState { get; }
 
+		/// <summary>
+		/// Gets the delta the mouse has moved from the previous state.
+		/// </summary>
+		public Vector2 PositionDelta { get; }
+
 		#endregion
 
 		#region Methods
@@ -37,12 +44,13 @@ namespace Engine.Input
 		/// Call to get a new manager for the current state.
 		/// </summary>
 		/// <param name="oldState"></param>
+		/// <param name="currentPosition">If you used <see cref="Mouse.SetPosition"/> in a previous call you must set the new mouse position manually, otherwise the <see cref="PositionDelta"/> calculation will be wrong.</param>
 		/// <returns></returns>
-		public static MouseManager GetCurrentState(MouseManager oldState)
+		public static MouseManager GetCurrentState(MouseManager oldState, Point? currentPosition)
 		{
 			var n = Mouse.GetState();
 			var old = oldState?.NewState ?? n;
-			return new MouseManager(old, n);
+			return new MouseManager(old, n, currentPosition ?? old.Position);
 		}
 
 		/// <summary>

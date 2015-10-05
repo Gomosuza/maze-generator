@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Engine.Input;
 using Engine.Rendering.Impl;
 
@@ -51,7 +52,7 @@ namespace Engine
 		/// Global render context set in <see cref="Initialize"/>.
 		/// If you want to use your own, just set it before your call to <see cref="Initialize"/>.
 		/// </summary>
-		public RenderContext RenderContext { get; protected set; }
+		public RenderTargetBasedRenderContext RenderContext { get; protected set; }
 
 		#endregion
 
@@ -72,28 +73,40 @@ namespace Engine
 			base.Draw(gameTime);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
+			RenderContext.Attach();
 			foreach (var component in _components)
 			{
 				component.Render(RenderContext, gameTime);
 			}
-			RenderContext.Render(gameTime);
+			RenderContext.Detach();
 		}
 
 		protected override void Initialize()
 		{
 			base.Initialize();
+			Mouse.SetPosition(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
 			Content.RootDirectory = "Content";
 			// render to backbuffer by default, but only if user didn't provide a rendercontext already
 			if (RenderContext == null)
 			{
-				RenderContext = new RenderContext(GraphicsDeviceManager, null, Content);
+				RenderContext = new RenderTargetBasedRenderContext(GraphicsDeviceManager, null, Content);
 			}
 		}
 
 		protected override void Update(GameTime gameTime)
 		{
 			base.Update(gameTime);
-			MouseManager = MouseManager.GetCurrentState(MouseManager);
+
+			// reset mouse to center of screen at each frame if user set it to invisible
+			bool mouseIsAlwaysCentered = !IsMouseVisible && IsActive;
+			var center = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+			MouseManager = MouseManager.GetCurrentState(MouseManager, center);
+
+			if (mouseIsAlwaysCentered)
+			{
+				// reset the invisible mouse so it is always center
+				Mouse.SetPosition(center.X, center.Y);
+			}
 			KeyboardManager = KeyboardManager.GetCurrentState(KeyboardManager);
 
 			foreach (var component in _components)
