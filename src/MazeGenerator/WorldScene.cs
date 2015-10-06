@@ -24,7 +24,7 @@ namespace MazeGenerator
 		public WorldScene(IRenderContext renderContext)
 		{
 			var meshBuilder = new TexturedMeshDescriptionBuilder();
-			meshBuilder.AddBox(new BoundingBox(Vector3.One * 10, Vector3.Zero), 20);
+			meshBuilder.AddBox(new BoundingBox(Vector3.One * 5, Vector3.Zero), 10);
 
 			_cuboid = renderContext.MeshCreator.CreateMesh(meshBuilder);
 		}

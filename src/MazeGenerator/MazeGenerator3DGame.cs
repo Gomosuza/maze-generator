@@ -20,9 +20,12 @@ namespace MazeGenerator
 		#region Fields
 
 		private readonly Keys _backward;
+		private readonly Keys _down;
 		private readonly Keys _forward;
 		private readonly Keys _left;
 		private readonly Keys _right;
+		private readonly Keys _toggleCamera;
+		private readonly Keys _up;
 
 		private FirstPersonCamera _camera;
 
@@ -59,7 +62,10 @@ namespace MazeGenerator
 			if (!ReadKey(fileName, "input", "Forward", out _forward) ||
 			    !ReadKey(fileName, "input", "Left", out _left) ||
 			    !ReadKey(fileName, "input", "Backward", out _backward) ||
-			    !ReadKey(fileName, "input", "Right", out _right))
+			    !ReadKey(fileName, "input", "Right", out _right) ||
+			    !ReadKey(fileName, "input", "Up", out _up) ||
+			    !ReadKey(fileName, "input", "Down", out _down) ||
+			    !ReadKey(fileName, "input", "ToggleCamera", out _toggleCamera))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -78,7 +84,10 @@ namespace MazeGenerator
 		protected override void Initialize()
 		{
 			base.Initialize();
-			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(0, 0, 100), FirstPersonCamera.FirstPersonMode.Person);
+
+			const int playerHeight = 2;
+			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(0, playerHeight, 20), FirstPersonCamera.FirstPersonMode.Plane);
+			UpdateWindowTitle();
 
 			FpsCounter.Enable(this);
 			Add(new WorldScene(RenderContext));
@@ -115,8 +124,27 @@ namespace MazeGenerator
 
 		private void HandleInput(GameTime dt)
 		{
+			if (KeyboardManager.IsKeyPressed(_toggleCamera))
+			{
+				var h = _camera.UpDownRotation;
+				var v = _camera.LeftRightRotation;
+				switch (_camera.Mode)
+				{
+					case FirstPersonCamera.FirstPersonMode.Plane:
+						_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Person, _camera.FarZ);
+						break;
+					case FirstPersonCamera.FirstPersonMode.Person:
+						_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Plane, _camera.FarZ);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+				_camera.SetRotation(h, v);
+				UpdateWindowTitle();
+			}
 			var time = (float)dt.ElapsedGameTime.TotalMilliseconds / 1000f;
 			var delta = MouseManager.PositionDelta;
+
 			float rotationY = 0, rotationX = 0;
 			const float rotateDelta = 200f;
 			if (delta.X != 0)
@@ -130,8 +158,8 @@ namespace MazeGenerator
 			_camera.AddHorizontalRotation(rotationY * time / 50f);
 			_camera.AddVerticalRotation(rotationX * time / 50f);
 
-			int stepsX = 0, stepsZ = 0, stepsY = 0;
-			const int move = 1;
+			float stepsX = 0, stepsZ = 0, stepsY = 0;
+			const float move = .5f;
 			if (KeyboardManager.IsKeyDown(_left))
 			{
 				stepsX -= move;
@@ -148,9 +176,25 @@ namespace MazeGenerator
 			{
 				stepsZ += move;
 			}
+			if (_camera.Mode == FirstPersonCamera.FirstPersonMode.Plane)
+			{
+				if (KeyboardManager.IsKeyDown(_up))
+				{
+					stepsY += move;
+				}
+				if (KeyboardManager.IsKeyDown(_down))
+				{
+					stepsY -= move;
+				}
+			}
 			_camera.Move(new Vector3(stepsX, stepsY, stepsZ) * time * 30f);
 
 			_camera.Update(dt);
+		}
+
+		private void UpdateWindowTitle()
+		{
+			Window.Title = $"Maze Generator - {_toggleCamera} to toggle camera. Current mode: {_camera.Mode}";
 		}
 
 		#endregion

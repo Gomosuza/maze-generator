@@ -54,6 +54,17 @@ namespace Engine.Input
 			return NewState.IsKeyDown(key);
 		}
 
+		/// <summary>
+		/// Returns whether a key has been pressed.
+		/// A key press is defined as the key being pressed in the previous update and being released just now.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool IsKeyPressed(Keys key)
+		{
+			return OldState.IsKeyDown(key) && NewState.IsKeyUp(key);
+		}
+
 		#endregion
 	}
 }

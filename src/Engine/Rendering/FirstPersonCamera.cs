@@ -20,7 +20,7 @@ namespace Engine.Rendering
 			Plane,
 
 			/// <summary>
-			/// In person mode, the camera will be "locked" to the ground. If the player presses forward, it will no alter his vertical position.
+			/// In person mode, the camera will be "locked" to the ground. If the player presses forward, it will not alter his vertical position.
 			/// </summary>
 			Person
 		}
@@ -32,11 +32,9 @@ namespace Engine.Rendering
 		private const float NearZ = 0.5f;
 
 		private readonly GraphicsDevice _device;
-		private readonly float _farZ;
 
 		private bool _dirty;
-		private float _leftRightRotation;
-		private Vector3 _position;
+		private float _leftRightLeftRightRotation;
 		private float _upDownRotation;
 
 		#endregion
@@ -54,9 +52,9 @@ namespace Engine.Rendering
 		public FirstPersonCamera(GraphicsDevice device, Vector3 initialPosition, FirstPersonMode mode, float farZ = 1000)
 		{
 			_device = device;
-			_farZ = farZ;
+			FarZ = farZ;
 
-			_position = initialPosition;
+			Position = initialPosition;
 			Mode = mode;
 			_dirty = true;
 		}
@@ -65,46 +63,46 @@ namespace Engine.Rendering
 
 		#region Properties
 
+		public float FarZ { get; }
+
+		/// <summary>
+		/// The horizontal rotation around the Y axis.
+		/// </summary>
+		public float LeftRightRotation
+		{
+			get { return _leftRightLeftRightRotation; }
+			private set
+			{
+				_leftRightLeftRightRotation = value;
+				_dirty = true;
+			}
+		}
+
+		/// <summary>
+		/// Gets the mode of the camera.
+		/// </summary>
 		public FirstPersonMode Mode { get; }
 
-		public Vector3 Position
-		{
-			get { return _position; }
-		}
+		public Vector3 Position { get; private set; }
 
 		/// <see cref="ICamera.Projection"/>
 		public Matrix Projection { get; private set; }
 
-		/// <see cref="ICamera.View"/>
-		public Matrix View { get; private set; }
-
-		private float RotationY
-		{
-			get { return _leftRightRotation; }
-			set
-			{
-				if (Math.Abs(_leftRightRotation - value) < float.Epsilon)
-				{
-					return;
-				}
-				_leftRightRotation = value;
-				_dirty = true;
-			}
-		}
-
-		private float UpDownRotation
+		/// <summary>
+		/// The vertical rotation around the X axis.
+		/// </summary>
+		public float UpDownRotation
 		{
 			get { return _upDownRotation; }
-			set
+			private set
 			{
-				if (Math.Abs(_upDownRotation - value) < float.Epsilon)
-				{
-					return;
-				}
 				_upDownRotation = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
 				_dirty = true;
 			}
 		}
+
+		/// <see cref="ICamera.View"/>
+		public Matrix View { get; private set; }
 
 		#endregion
 
@@ -116,9 +114,13 @@ namespace Engine.Rendering
 		/// <see cref="ICamera.DistanceToCameraSquared"/>
 		public float DistanceToCameraSquared(Vector3 world) => (world - Position).LengthSquared();
 
+		/// <summary>
+		/// Returns the current position of the camera.
+		/// </summary>
+		/// <returns></returns>
 		public Vector3 GetPosition()
 		{
-			return _position;
+			return Position;
 		}
 
 		/// <see cref="ICamera.ScreenToWorld"/>
@@ -149,7 +151,7 @@ namespace Engine.Rendering
 		/// <param name="value"></param>
 		public void AddHorizontalRotation(float value)
 		{
-			RotationY -= value;
+			LeftRightRotation -= value;
 
 			_dirty = true;
 
@@ -176,17 +178,17 @@ namespace Engine.Rendering
 			{
 				case FirstPersonMode.Plane:
 				{
-					Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
+					Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightLeftRightRotation);
 					Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
-					_position += rotatedVector;
+					Position += rotatedVector;
 				}
 					break;
 				case FirstPersonMode.Person:
 				{
 					// restrict movement around Y axis
-					Matrix cameraRotation = Matrix.CreateRotationY(_leftRightRotation);
+					Matrix cameraRotation = Matrix.CreateRotationY(_leftRightLeftRightRotation);
 					Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
-					_position += rotatedVector;
+					Position += rotatedVector;
 				}
 					break;
 				default:
@@ -203,7 +205,7 @@ namespace Engine.Rendering
 		public void SetRotation(float horizontalRotation, float verticalRotation)
 		{
 			UpDownRotation = horizontalRotation;
-			RotationY = verticalRotation;
+			LeftRightRotation = verticalRotation;
 
 			Update();
 		}
@@ -215,7 +217,7 @@ namespace Engine.Rendering
 				return;
 			}
 
-			var rotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
+			var rotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightLeftRightRotation);
 
 			var rotated = Vector3.Transform(Vector3.UnitZ * -1, rotation);
 			var final = Position + rotated;
@@ -223,7 +225,7 @@ namespace Engine.Rendering
 			var up = Vector3.Transform(Vector3.Up, rotation);
 			View = Matrix.CreateLookAt(Position, final, up);
 
-			Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, NearZ, _farZ);
+			Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, NearZ, FarZ);
 
 			_dirty = false;
 		}
