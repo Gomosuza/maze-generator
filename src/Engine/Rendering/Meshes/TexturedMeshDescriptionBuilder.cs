@@ -65,16 +65,6 @@ namespace Engine.Rendering.Meshes
 		}
 
 		/// <summary>
-		/// Creates vertices to represent the floor of the given bounding box.
-		/// </summary>
-		/// <param name="box"></param>
-		/// <param name="floorTileSize"></param>
-		public void AddFloor(BoundingBox box, float floorTileSize)
-		{
-			AddPlane(box, Plane.NegativeY, true, floorTileSize);
-		}
-
-		/// <summary>
 		/// Adds a plane from the bounding box that is on the specific side, and making it face inwards.
 		/// </summary>
 		/// <param name="box"></param>
@@ -87,32 +77,32 @@ namespace Engine.Rendering.Meshes
 			{
 				case Plane.NegativeY:
 					// Floor
-					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Min.Y, !faceOutwards, tileSize);
+					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Min.Y, faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveY:
 					// Ceil
-					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Max.Y, faceOutwards, tileSize);
+					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Max.Y, !faceOutwards, tileSize);
 					break;
 
 				case Plane.NegativeZ:
 					// wall furthest away from screen
-					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Min.Z, !faceOutwards, tileSize);
+					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Min.Z, faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveZ:
 					// wall closest to screen
-					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Max.Z, faceOutwards, tileSize);
+					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Max.Z, !faceOutwards, tileSize);
 					break;
 
 				case Plane.NegativeX:
 					// wall to the left
-					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Min.X, !faceOutwards, tileSize);
+					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Min.X, faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveX:
 					// wall to the right
-					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Max.X, faceOutwards, tileSize);
+					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Max.X, !faceOutwards, tileSize);
 					break;
 
 				default:
@@ -219,52 +209,26 @@ namespace Engine.Rendering.Meshes
 		/// <summary>
 		/// Method that allows to add a room to the mesh.
 		/// As with all rooms it faces inwards.
-		/// If you don't want ceiling/floor use <see cref="AddRoomWalls"/>.
 		/// </summary>
 		/// <param name="box">The bounding box to add to the mesh.</param>
 		/// <param name="tileSize">The texture scaling. The scale is applied equaly on all faces.</param>
 		public void AddRoom(BoundingBox box, float tileSize = 1.0f)
 		{
-			AddRoomWalls(box, tileSize);
-			//AddFloor(box, tileSize);
-			AddCeiling(box, tileSize);
-		}
-
-		/// <summary>
-		/// Adds walls to the mesh.
-		/// The walls are facing inwards like a room.
-		/// </summary>
-		/// <param name="box"></param>
-		/// <param name="tileSize"></param>
-		public void AddRoomWalls(BoundingBox box, float tileSize = 1.0f)
-		{
-			// 4 Walls
 			AddPlane(box, Plane.PositiveX, false, tileSize);
+			AddPlane(box, Plane.PositiveY, false, tileSize);
 			AddPlane(box, Plane.PositiveZ, false, tileSize);
 
 			AddPlane(box, Plane.NegativeX, false, tileSize);
+			AddPlane(box, Plane.NegativeY, false, tileSize);
 			AddPlane(box, Plane.NegativeZ, false, tileSize);
 		}
 
 		/// <summary>
-		/// Adds a wall from the bounding box that is facing inwards.
+		/// Removes all vertices from the builder.
 		/// </summary>
-		/// <param name="box"></param>
-		/// <param name="plane"></param>
-		/// <param name="tileSize"></param>
-		public void AddWall(BoundingBox box, Plane plane, float tileSize = 1.0f)
-		{
-			AddPlane(box, plane, false, tileSize);
-		}
-
 		public void Clear()
 		{
 			_vertices.Clear();
-		}
-
-		private void AddCeiling(BoundingBox box, float tileSize)
-		{
-			AddPlane(box, Plane.PositiveY, false, tileSize);
 		}
 
 		#endregion
