@@ -19,6 +19,7 @@ namespace Engine.Rendering
 		private bool _dirty;
 		private float _leftRightRotation;
 		private Vector3 _position;
+
 		private float _upDownRotation;
 
 		#endregion
@@ -31,19 +32,23 @@ namespace Engine.Rendering
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="initialPosition">The starting point of the camera.</param>
+		/// <param name="mode"></param>
 		/// <param name="farZ">The far clipping plane.</param>
-		public FirstPersonCamera(GraphicsDevice device, Vector3 initialPosition, float farZ = 1000)
+		public FirstPersonCamera(GraphicsDevice device, Vector3 initialPosition, FirstPersonMode mode, float farZ = 1000)
 		{
 			_device = device;
 			_farZ = farZ;
 
 			_position = initialPosition;
+			Mode = mode;
 			_dirty = true;
 		}
 
 		#endregion
 
 		#region Properties
+
+		public FirstPersonMode Mode { get; }
 
 		public Vector3 Position
 		{
@@ -82,6 +87,20 @@ namespace Engine.Rendering
 				_upDownRotation = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
 				_dirty = true;
 			}
+		}
+
+		public enum FirstPersonMode
+		{
+			/// <summary>
+			/// In plane mode, the camera will fly directly in the direction it is pointed.
+			/// This may e.g. result in the camera flying straight up when forward is pressed and the user is looking straight up.
+			/// </summary>
+			Plane,
+
+			/// <summary>
+			/// In person mode, the camera will be "locked" to the ground. If the player presses forward, it will no alter his vertical position.
+			/// </summary>
+			Person
 		}
 
 		#endregion
@@ -150,9 +169,26 @@ namespace Engine.Rendering
 
 		public void Move(Vector3 movement)
 		{
-			Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
-			Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
-			_position += rotatedVector;
+			switch (Mode)
+			{
+				case FirstPersonMode.Plane:
+				{
+					Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
+					Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
+					_position += rotatedVector;
+				}
+					break;
+				case FirstPersonMode.Person:
+				{
+					// restrict movement around Y axis
+					Matrix cameraRotation = Matrix.CreateRotationY(_leftRightRotation);
+					Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
+					_position += rotatedVector;
+				}
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 			_dirty = true;
 		}
 
