@@ -6,6 +6,7 @@ using Core;
 using Core.Extensions;
 using Engine;
 using Engine.Diagnostics;
+using Engine.Rendering.Components;
 
 namespace MazeGenerator
 {
@@ -54,6 +55,7 @@ namespace MazeGenerator
 
 			FpsCounter.Enable(this);
 			Add(new WorldScene(RenderContext));
+			Add(new GridAxis(RenderContext, true));
 		}
 
 		protected override void Update(GameTime gameTime)

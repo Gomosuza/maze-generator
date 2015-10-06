@@ -26,8 +26,8 @@ namespace MazeGenerator
 
 		public WorldScene(IRenderContext renderContext)
 		{
-			var meshBuilder = new MeshDescriptionBuilder();
-			meshBuilder.AddBox(new BoundingBox(Vector3.One * 10, Vector3.Zero));
+			var meshBuilder = new TexturedMeshDescriptionBuilder();
+			meshBuilder.AddRoom(new BoundingBox(Vector3.One * 10, Vector3.Zero), 20);
 
 			_cuboid = renderContext.MeshCreator.CreateMesh(meshBuilder);
 
@@ -44,8 +44,8 @@ namespace MazeGenerator
 			renderContext.RenderContext3D.Camera = _camera;
 
 			var world = Matrix.Identity;
-			var brush = new SolidColorBrush(Color.Black);
-			renderContext.RenderContext3D.DrawMesh(_cuboid, world, brush, new Pen(Color.White));
+			var brush = new TexturedBrush("default");
+			renderContext.RenderContext3D.DrawMesh(_cuboid, world, brush);
 		}
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
@@ -66,7 +66,7 @@ namespace MazeGenerator
 			_camera.AddHorizontalRotation(rotationY * time / 50f);
 			_camera.AddVerticalRotation(rotationX * time / 50f);
 
-			int stepsX = 0, stepsZ = 0;
+			int stepsX = 0, stepsZ = 0, stepsY = 0;
 			const int move = 1;
 			if (keyboard.IsKeyDown(Keys.A))
 			{
@@ -84,7 +84,15 @@ namespace MazeGenerator
 			{
 				stepsZ += move;
 			}
-			_camera.Move(new Vector3(stepsX, 0, stepsZ) * time * 30f);
+			if (keyboard.IsKeyDown(Keys.Space))
+			{
+				stepsY += move;
+			}
+			if (keyboard.IsKeyDown(Keys.LeftControl))
+			{
+				stepsY -= move;
+			}
+			_camera.Move(new Vector3(stepsX, stepsY, stepsZ) * time * 30f);
 
 			_camera.Update(dt);
 		}

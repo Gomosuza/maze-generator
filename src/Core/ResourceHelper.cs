@@ -25,11 +25,6 @@ namespace Core
 			return asm.GetManifestResourceNames().Contains(res);
 		}
 
-		private static string ParseResourceName(Assembly asm, string resourceName, string defaultNamespace = null)
-		{
-			return (defaultNamespace ?? asm.GetName().Name) + "." + resourceName.Replace("\\", ".");
-		}
-
 		/// <summary>
 		/// Writes the given resource to disk.
 		/// Returns false if resource does not exist or target path is already in use.
@@ -79,6 +74,11 @@ namespace Core
 				}
 			}
 			return true;
+		}
+
+		private static string ParseResourceName(Assembly asm, string resourceName, string defaultNamespace = null)
+		{
+			return (defaultNamespace ?? asm.GetName().Name) + "." + resourceName.Replace("\\", ".");
 		}
 
 		#endregion

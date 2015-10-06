@@ -29,7 +29,7 @@ namespace Engine.Rendering
 
 		/// <summary>
 		/// Draws a mesh using the provided pen and brush.
-		/// Both are optional however one is at least required.
+		/// If none are provided, the renderer implementation may offer a default implementation.
 		/// </summary>
 		/// <param name="mesh"></param>
 		/// <param name="world"></param>

@@ -94,7 +94,10 @@ namespace Engine.Rendering.Brushes
 		internal override void Prepare(IRenderContext renderContext)
 		{
 			_texture = renderContext.Content.Load<Texture2D>(Texture);
-			_sampler = new SamplerState {Filter = TextureFilter.LinearMipPoint};
+			_sampler = new SamplerState
+			{
+				Filter = TextureFilter.LinearMipPoint
+			};
 		}
 
 		#endregion

@@ -31,6 +31,13 @@ namespace Engine.Rendering
 		float DistanceToCameraSquared(Vector3 world);
 
 		/// <summary>
+		/// Returns the camera position.
+		/// Note that this value differes between camera implementations.
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetPosition();
+
+		/// <summary>
 		/// Calculates a ray that travels from the camera position
 		/// to the far plane that contains the given screen-space-point.
 		/// </summary>

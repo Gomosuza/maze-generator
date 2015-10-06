@@ -8,6 +8,7 @@ namespace Engine.Rendering.Impl
 {
 	/// <summary>
 	/// Default render context implementation that uses a rendertarget as drawing target.
+	/// Can also directly draw to back buffer.
 	/// </summary>
 	public class RenderTargetBasedRenderContext : IRenderContext
 	{
@@ -35,6 +36,10 @@ namespace Engine.Rendering.Impl
 			if (graphicsDeviceManager.GraphicsDevice == null)
 			{
 				throw new ArgumentNullException(nameof(graphicsDeviceManager));
+			}
+			if (content == null)
+			{
+				throw new ArgumentNullException(nameof(content));
 			}
 
 			GraphicsDevice = graphicsDeviceManager.GraphicsDevice;
@@ -83,11 +88,13 @@ namespace Engine.Rendering.Impl
 		public void Attach()
 		{
 			GraphicsDevice.SetRenderTarget(RenderTarget);
+			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 		}
 
 		public void Detach()
 		{
-			// 3D renderer draws everything when called, only 2D renderer buffers
+			// 3D renderer draws everything when called, only 2D renderer buffers draw calls
+			// so render 2D stuff in detach method as all 3D has been drawn by now
 			_renderContext2D.Render();
 		}
 

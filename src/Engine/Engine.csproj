@@ -56,6 +56,8 @@
     <Compile Include="Rendering\Brush.cs" />
     <Compile Include="Rendering\Brushes\SolidColorBrush.cs" />
     <Compile Include="Rendering\Brushes\TexturedBrush.cs" />
+    <Compile Include="Rendering\Brushes\VertexColorBrush.cs" />
+    <Compile Include="Rendering\Components\GridAxis.cs" />
     <Compile Include="Rendering\FirstPersonCamera.cs" />
     <Compile Include="Rendering\FontSize.cs" />
     <Compile Include="Rendering\Helpers\FontEntity2D.cs" />
@@ -67,7 +69,7 @@
     <Compile Include="Rendering\Meshes\UpdatableDynamicMesh.cs" />
     <Compile Include="Rendering\Meshes\IMeshCreator.cs" />
     <Compile Include="Rendering\Impl\MeshCreator.cs" />
-    <Compile Include="Rendering\Meshes\MeshDescriptionBuilder.cs" />
+    <Compile Include="Rendering\Meshes\TexturedMeshDescriptionBuilder.cs" />
     <Compile Include="Rendering\Meshes\Plane.cs" />
     <Compile Include="Rendering\Meshes\StaticMesh.cs" />
     <Compile Include="Rendering\Helpers\TextureEntity2D.cs" />

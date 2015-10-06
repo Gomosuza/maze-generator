@@ -1,5 +1,8 @@
 namespace Engine
 {
+
+	#region Enumerations
+
 	public enum Corner
 	{
 		TopLeft,
@@ -7,4 +10,6 @@ namespace Engine
 		BottomRight,
 		BottomLeft
 	}
+
+	#endregion
 }

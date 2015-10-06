@@ -56,20 +56,6 @@ namespace Engine.Rendering
 		/// <see cref="ICamera.View"/>
 		public Matrix View { get; private set; }
 
-		private float UpDownRotation
-		{
-			get { return _upDownRotation; }
-			set
-			{
-				if (Math.Abs(_upDownRotation - value) < float.Epsilon)
-				{
-					return;
-				}
-				_upDownRotation = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
-				_dirty = true;
-			}
-		}
-
 		private float RotationY
 		{
 			get { return _leftRightRotation; }
@@ -84,6 +70,20 @@ namespace Engine.Rendering
 			}
 		}
 
+		private float UpDownRotation
+		{
+			get { return _upDownRotation; }
+			set
+			{
+				if (Math.Abs(_upDownRotation - value) < float.Epsilon)
+				{
+					return;
+				}
+				_upDownRotation = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
+				_dirty = true;
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -93,6 +93,11 @@ namespace Engine.Rendering
 
 		/// <see cref="ICamera.DistanceToCameraSquared"/>
 		public float DistanceToCameraSquared(Vector3 world) => (world - Position).LengthSquared();
+
+		public Vector3 GetPosition()
+		{
+			return _position;
+		}
 
 		/// <see cref="ICamera.ScreenToWorld"/>
 		public Ray ScreenToWorld(Vector2 screen)
@@ -116,23 +121,15 @@ namespace Engine.Rendering
 			return new Vector2(tmp.X, tmp.Y);
 		}
 
-		public void Move(Vector3 movement)
-		{
-			Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
-			Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
-			_position += rotatedVector;
-			_dirty = true;
-		}
-
 		/// <summary>
-		/// Sets both rotation components.
+		/// Adds the value to the horizontal rotation (if positive will make the player look right, if negative will make him look left).
 		/// </summary>
-		/// <param name="horizontalRotation">The rotation around the Y axis.</param>
-		/// <param name="verticalRotation">The rotation around the X axis.</param>
-		public void SetRotation(float horizontalRotation, float verticalRotation)
+		/// <param name="value"></param>
+		public void AddHorizontalRotation(float value)
 		{
-			UpDownRotation = horizontalRotation;
-			RotationY = verticalRotation;
+			RotationY -= value;
+
+			_dirty = true;
 
 			Update();
 		}
@@ -151,15 +148,23 @@ namespace Engine.Rendering
 			Update();
 		}
 
-		/// <summary>
-		/// Adds the value to the horizontal rotation (if positive will make the player look right, if negative will make him look left).
-		/// </summary>
-		/// <param name="value"></param>
-		public void AddHorizontalRotation(float value)
+		public void Move(Vector3 movement)
 		{
-			RotationY -= value;
-
+			Matrix cameraRotation = Matrix.CreateRotationX(_upDownRotation) * Matrix.CreateRotationY(_leftRightRotation);
+			Vector3 rotatedVector = Vector3.Transform(movement, cameraRotation);
+			_position += rotatedVector;
 			_dirty = true;
+		}
+
+		/// <summary>
+		/// Sets both rotation components.
+		/// </summary>
+		/// <param name="horizontalRotation">The rotation around the Y axis.</param>
+		/// <param name="verticalRotation">The rotation around the X axis.</param>
+		public void SetRotation(float horizontalRotation, float verticalRotation)
+		{
+			UpDownRotation = horizontalRotation;
+			RotationY = verticalRotation;
 
 			Update();
 		}

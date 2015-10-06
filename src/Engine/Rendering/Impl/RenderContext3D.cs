@@ -28,8 +28,17 @@ namespace Engine.Rendering.Impl
 		public RenderContext3D(IRenderContext attachedRenderContext, CullMode cullMode = CullMode.CullCounterClockwiseFace)
 		{
 			RenderContext = attachedRenderContext;
-			_fillState = new RasterizerState {CullMode = cullMode, FillMode = FillMode.Solid};
-			_wireFrameState = new RasterizerState {CullMode = cullMode, FillMode = FillMode.WireFrame, DepthBias = -0.1f};
+			_fillState = new RasterizerState
+			{
+				CullMode = cullMode,
+				FillMode = FillMode.Solid
+			};
+			_wireFrameState = new RasterizerState
+			{
+				CullMode = cullMode,
+				FillMode = FillMode.WireFrame,
+				DepthBias = -0.1f
+			};
 
 			_effect = new BasicEffect(attachedRenderContext.GraphicsDevice);
 		}
@@ -46,13 +55,20 @@ namespace Engine.Rendering.Impl
 
 		#region Methods
 
+		/// <summary>
+		/// Renders the mesh with either brush or pen. Both are permitted as well.
+		/// If none are provided, an exception is thrown.
+		/// </summary>
+		/// <param name="mesh"></param>
+		/// <param name="world"></param>
+		/// <param name="brush"></param>
+		/// <param name="pen"></param>
 		public void DrawMesh(Mesh mesh, Matrix world, Brush brush = null, Pen pen = null)
 		{
 			if (brush == null && pen == null)
 			{
-				throw new NotSupportedException("You must set either brush, pen or both. Setting none would result in nothing getting drawn");
+				throw new NotSupportedException("You must set either brush, pen or both. Setting none would result in nothing getting drawn.");
 			}
-
 			mesh.Attach();
 
 			SetupCamera(world);
