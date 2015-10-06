@@ -26,6 +26,7 @@ namespace MazeGenerator
 		private readonly Keys _right;
 		private readonly Keys _toggleCamera;
 		private readonly Keys _up;
+		private readonly Keys _boost;
 
 		private FirstPersonCamera _camera;
 
@@ -60,12 +61,13 @@ namespace MazeGenerator
 			IsMouseVisible = false;
 
 			if (!ReadKey(fileName, "input", "Forward", out _forward) ||
-			    !ReadKey(fileName, "input", "Left", out _left) ||
-			    !ReadKey(fileName, "input", "Backward", out _backward) ||
-			    !ReadKey(fileName, "input", "Right", out _right) ||
-			    !ReadKey(fileName, "input", "Up", out _up) ||
-			    !ReadKey(fileName, "input", "Down", out _down) ||
-			    !ReadKey(fileName, "input", "ToggleCamera", out _toggleCamera))
+				!ReadKey(fileName, "input", "Left", out _left) ||
+				!ReadKey(fileName, "input", "Backward", out _backward) ||
+				!ReadKey(fileName, "input", "Right", out _right) ||
+				!ReadKey(fileName, "input", "Up", out _up) ||
+				!ReadKey(fileName, "input", "Down", out _down) ||
+				!ReadKey(fileName, "input", "ToggleCamera", out _toggleCamera) ||
+				!ReadKey(fileName, "input", "Boost", out _boost))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -85,13 +87,18 @@ namespace MazeGenerator
 		{
 			base.Initialize();
 
-			const int playerHeight = 2;
-			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(0, playerHeight, 20), FirstPersonCamera.FirstPersonMode.Plane);
-			UpdateWindowTitle();
-
 			FpsCounter.Enable(this);
-			Add(new WorldScene(RenderContext));
+			var world = new WorldScene(RenderContext);
+
+			var box = world.GetEmptyCellCloseToCenter();
+			const int playerHeight = 2;
+			var center = new Vector3(box.Max.X + box.Min.X, 0, box.Max.Z + box.Min.Z) / 2;
+			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(center.X, playerHeight, center.Z), FirstPersonCamera.FirstPersonMode.Person);
+
+			Add(world);
 			Add(new GridAxis(RenderContext, true));
+
+			UpdateWindowTitle();
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -126,27 +133,14 @@ namespace MazeGenerator
 		{
 			if (KeyboardManager.IsKeyPressed(_toggleCamera))
 			{
-				var h = _camera.UpDownRotation;
-				var v = _camera.LeftRightRotation;
-				switch (_camera.Mode)
-				{
-					case FirstPersonCamera.FirstPersonMode.Plane:
-						_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Person, _camera.FarZ);
-						break;
-					case FirstPersonCamera.FirstPersonMode.Person:
-						_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Plane, _camera.FarZ);
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-				_camera.SetRotation(h, v);
+				ToggleCameraMode();
 				UpdateWindowTitle();
 			}
 			var time = (float)dt.ElapsedGameTime.TotalMilliseconds / 1000f;
 			var delta = MouseManager.PositionDelta;
 
 			float rotationY = 0, rotationX = 0;
-			const float rotateDelta = 200f;
+			const float rotateDelta = 150f;
 			if (delta.X != 0)
 			{
 				rotationY = delta.X * rotateDelta * time;
@@ -159,7 +153,7 @@ namespace MazeGenerator
 			_camera.AddVerticalRotation(rotationX * time / 50f);
 
 			float stepsX = 0, stepsZ = 0, stepsY = 0;
-			const float move = .5f;
+			var move = KeyboardManager.IsKeyDown(_boost) ? 1.5f : 0.5f;
 			if (KeyboardManager.IsKeyDown(_left))
 			{
 				stepsX -= move;
@@ -190,6 +184,24 @@ namespace MazeGenerator
 			_camera.Move(new Vector3(stepsX, stepsY, stepsZ) * time * 30f);
 
 			_camera.Update(dt);
+		}
+
+		private void ToggleCameraMode()
+		{
+			var h = _camera.UpDownRotation;
+			var v = _camera.LeftRightRotation;
+			switch (_camera.Mode)
+			{
+				case FirstPersonCamera.FirstPersonMode.Plane:
+					_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Person, _camera.FarZ);
+					break;
+				case FirstPersonCamera.FirstPersonMode.Person:
+					_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Plane, _camera.FarZ);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			_camera.SetRotation(h, v);
 		}
 
 		private void UpdateWindowTitle()
