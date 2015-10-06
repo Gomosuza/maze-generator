@@ -9,6 +9,24 @@ namespace Engine.Rendering
 	/// </summary>
 	public sealed class FirstPersonCamera : ICamera
 	{
+		#region Enumerations
+
+		public enum FirstPersonMode
+		{
+			/// <summary>
+			/// In plane mode, the camera will fly directly in the direction it is pointed.
+			/// This may e.g. result in the camera flying straight up when forward is pressed and the user is looking straight up.
+			/// </summary>
+			Plane,
+
+			/// <summary>
+			/// In person mode, the camera will be "locked" to the ground. If the player presses forward, it will no alter his vertical position.
+			/// </summary>
+			Person
+		}
+
+		#endregion
+
 		#region Fields
 
 		private const float NearZ = 0.5f;
@@ -19,7 +37,6 @@ namespace Engine.Rendering
 		private bool _dirty;
 		private float _leftRightRotation;
 		private Vector3 _position;
-
 		private float _upDownRotation;
 
 		#endregion
@@ -87,20 +104,6 @@ namespace Engine.Rendering
 				_upDownRotation = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
 				_dirty = true;
 			}
-		}
-
-		public enum FirstPersonMode
-		{
-			/// <summary>
-			/// In plane mode, the camera will fly directly in the direction it is pointed.
-			/// This may e.g. result in the camera flying straight up when forward is pressed and the user is looking straight up.
-			/// </summary>
-			Plane,
-
-			/// <summary>
-			/// In person mode, the camera will be "locked" to the ground. If the player presses forward, it will no alter his vertical position.
-			/// </summary>
-			Person
 		}
 
 		#endregion

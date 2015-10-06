@@ -19,7 +19,10 @@ namespace MazeGenerator
 	{
 		#region Fields
 
-		private readonly Keys _forward, _left, _backward, _right;
+		private readonly Keys _backward;
+		private readonly Keys _forward;
+		private readonly Keys _left;
+		private readonly Keys _right;
 
 		private FirstPersonCamera _camera;
 
@@ -66,15 +69,10 @@ namespace MazeGenerator
 
 		#region Methods
 
-		private static bool ReadKey(string file, string section, string key, out Keys k)
+		protected override void Draw(GameTime gameTime)
 		{
-			var c = IniHelper.ReadValue(file, section, key);
-			if (!string.IsNullOrEmpty(c))
-			{
-				return Enum.TryParse(c, true, out k);
-			}
-			k = Keys.None;
-			return false;
+			RenderContext.RenderContext3D.Camera = _camera;
+			base.Draw(gameTime);
 		}
 
 		protected override void Initialize()
@@ -102,6 +100,17 @@ namespace MazeGenerator
 			}
 #endif
 			HandleInput(gameTime);
+		}
+
+		private static bool ReadKey(string file, string section, string key, out Keys k)
+		{
+			var c = IniHelper.ReadValue(file, section, key);
+			if (!string.IsNullOrEmpty(c))
+			{
+				return Enum.TryParse(c, true, out k);
+			}
+			k = Keys.None;
+			return false;
 		}
 
 		private void HandleInput(GameTime dt)
@@ -142,12 +151,6 @@ namespace MazeGenerator
 			_camera.Move(new Vector3(stepsX, stepsY, stepsZ) * time * 30f);
 
 			_camera.Update(dt);
-		}
-
-		protected override void Draw(GameTime gameTime)
-		{
-			RenderContext.RenderContext3D.Camera = _camera;
-			base.Draw(gameTime);
 		}
 
 		#endregion
