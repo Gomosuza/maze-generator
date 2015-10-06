@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Engine;
 using Engine.Input;
 using Engine.Rendering;
@@ -24,7 +23,7 @@ namespace MazeGenerator
 		public WorldScene(IRenderContext renderContext)
 		{
 			var meshBuilder = new TexturedMeshDescriptionBuilder();
-			meshBuilder.AddBox(new BoundingBox(Vector3.One * 5, Vector3.Zero), 10);
+			meshBuilder.AddBox(new BoundingBox(Vector3.Zero, Vector3.One*5), 10);
 
 			_cuboid = renderContext.MeshCreator.CreateMesh(meshBuilder);
 		}
@@ -35,8 +34,6 @@ namespace MazeGenerator
 
 		public void Render(IRenderContext renderContext, GameTime dt)
 		{
-			renderContext.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-
 			var world = Matrix.Identity;
 			var brush = new TexturedBrush("default");
 			renderContext.RenderContext3D.DrawMesh(_cuboid, world, brush);

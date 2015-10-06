@@ -77,32 +77,32 @@ namespace Engine.Rendering.Meshes
 			{
 				case Plane.NegativeY:
 					// Floor
-					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Min.Y, faceOutwards, tileSize);
+					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Min.Y, !faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveY:
 					// Ceil
-					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Max.Y, !faceOutwards, tileSize);
+					AddPlaneXz(box.Min.X, box.Max.X, box.Min.Z, box.Max.Z, box.Max.Y, faceOutwards, tileSize);
 					break;
 
 				case Plane.NegativeZ:
 					// wall furthest away from screen
-					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Min.Z, faceOutwards, tileSize);
+					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Min.Z, !faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveZ:
 					// wall closest to screen
-					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Max.Z, !faceOutwards, tileSize);
+					AddPlaneXy(box.Min.X, box.Max.X, box.Min.Y, box.Max.Y, box.Max.Z, faceOutwards, tileSize);
 					break;
 
 				case Plane.NegativeX:
 					// wall to the left
-					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Min.X, faceOutwards, tileSize);
+					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Min.X, !faceOutwards, tileSize);
 					break;
 
 				case Plane.PositiveX:
 					// wall to the right
-					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Max.X, !faceOutwards, tileSize);
+					AddPlaneYz(box.Min.Y, box.Max.Y, box.Min.Z, box.Max.Z, box.Max.X, faceOutwards, tileSize);
 					break;
 
 				default:
