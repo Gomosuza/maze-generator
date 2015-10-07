@@ -31,13 +31,15 @@ namespace Engine.Rendering.Impl
 			_fillState = new RasterizerState
 			{
 				CullMode = cullMode,
-				FillMode = FillMode.Solid
+				FillMode = FillMode.Solid,
+				MultiSampleAntiAlias = true
 			};
 			_wireFrameState = new RasterizerState
 			{
 				CullMode = cullMode,
 				FillMode = FillMode.WireFrame,
-				DepthBias = -0.1f
+				DepthBias = -0.1f,
+				MultiSampleAntiAlias = true
 			};
 
 			_effect = new BasicEffect(attachedRenderContext.GraphicsDevice);
@@ -74,12 +76,11 @@ namespace Engine.Rendering.Impl
 			SetupCamera(world);
 			if (brush != null)
 			{
+				RenderContext.GraphicsDevice.RasterizerState = _fillState;
 				if (!brush.IsPrepared)
 				{
 					brush.Prepare(RenderContext);
 				}
-
-				RenderContext.GraphicsDevice.RasterizerState = _fillState;
 				brush.Configure(_effect);
 
 				foreach (var pass in _effect.CurrentTechnique.Passes)
@@ -92,6 +93,10 @@ namespace Engine.Rendering.Impl
 			if (pen != null)
 			{
 				RenderContext.GraphicsDevice.RasterizerState = _wireFrameState;
+				if (!pen.IsPrepared)
+				{
+					pen.Prepare(RenderContext);
+				}
 				pen.Configure(_effect);
 
 				foreach (var pass in _effect.CurrentTechnique.Passes)

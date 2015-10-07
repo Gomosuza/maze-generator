@@ -23,7 +23,10 @@ namespace Engine
 
 		protected GameAbstraction()
 		{
-			GraphicsDeviceManager = new GraphicsDeviceManager(this);
+			GraphicsDeviceManager = new GraphicsDeviceManager(this)
+			{
+				PreferMultiSampling = true
+			};
 			_components = new List<IComponent>();
 		}
 

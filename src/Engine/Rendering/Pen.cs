@@ -8,7 +8,7 @@ namespace Engine.Rendering
 	/// A pen that outlines a drawing.
 	/// This will generally result in the wireframe being drawn over whichever object it is attached to.
 	/// </summary>
-	public sealed class Pen
+	public sealed class Pen : Brush
 	{
 		#region Fields
 
@@ -27,13 +27,23 @@ namespace Engine.Rendering
 
 		#region Methods
 
+		internal override bool IsPrepared
+		{
+			get { return _brush.IsPrepared; }
+		}
+
 		/// <summary>
 		/// Configures the given effect to use this brush.
 		/// </summary>
 		/// <param name="effect"></param>
-		internal void Configure(BasicEffect effect)
+		internal override void Configure(BasicEffect effect)
 		{
 			_brush.Configure(effect);
+		}
+
+		internal override void Prepare(IRenderContext renderContext)
+		{
+			_brush.Prepare(renderContext);
 		}
 
 		#endregion

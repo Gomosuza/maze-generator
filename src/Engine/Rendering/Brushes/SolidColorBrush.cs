@@ -13,6 +13,7 @@ namespace Engine.Rendering.Brushes
 
 		private Color _color;
 		private Vector3 _precalculated;
+		private SamplerState _sampler;
 
 		#endregion
 
@@ -39,7 +40,7 @@ namespace Engine.Rendering.Brushes
 
 		internal override bool IsPrepared
 		{
-			get { return true; }
+			get { return _sampler != null; }
 		}
 
 		#endregion
@@ -59,10 +60,16 @@ namespace Engine.Rendering.Brushes
 			effect.FogEnabled = false;
 			effect.VertexColorEnabled = false;
 			effect.TextureEnabled = false;
+
+			effect.GraphicsDevice.SamplerStates[0] = _sampler;
 		}
 
 		internal override void Prepare(IRenderContext renderContext)
 		{
+			_sampler = new SamplerState
+			{
+				Filter = TextureFilter.LinearMipPoint
+			};
 		}
 
 		#endregion

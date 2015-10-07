@@ -131,7 +131,7 @@ namespace MazeGenerator
 				}
 
 				if (xp < 0 || xp >= w ||
-				    yp < 0 || yp >= h)
+					yp < 0 || yp >= h)
 				{
 					continue;
 				}
