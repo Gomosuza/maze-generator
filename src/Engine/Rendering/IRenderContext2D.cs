@@ -51,6 +51,13 @@ namespace Engine.Rendering
 		/// <param name="layerDepth"></param>
 		void DrawTexture(Texture2D texture, Vector2 position, Vector2 origin, float scale, Color color, float layerDepth = 0);
 
+		/// <summary>
+		/// Measures and returns the given strings size using the provided font.
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="fontSize"></param>
+		Vector2 MeasureString(string message, FontSize fontSize);
+
 		#endregion
 	}
 }

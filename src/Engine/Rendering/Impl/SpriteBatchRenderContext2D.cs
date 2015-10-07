@@ -63,6 +63,13 @@ namespace Engine.Rendering.Impl
 			_entities.Add(new TextureEntity2D(texture, position, null, color, 0f, origin * new Vector2(texture.Width, texture.Height), scale, SpriteEffects.None, layerDepth));
 		}
 
+		public Vector2 MeasureString(string message, FontSize fontSize)
+		{
+			float scale;
+			var font = GetFontAndScale(fontSize, out scale);
+			return font.MeasureString(message) * scale;
+		}
+
 		public void Render()
 		{
 			_spriteBatch.Begin();

@@ -47,9 +47,11 @@
     <Compile Include="Datastructures\Quadtree\Leaf.cs" />
     <Compile Include="Datastructures\Quadtree\Node.cs" />
     <Compile Include="Datastructures\Quadtree\Quadtree.cs" />
+    <Compile Include="Diagnostics\DebugMessageBuilder.cs" />
     <Compile Include="Diagnostics\FpsCounter.cs" />
     <Compile Include="GameAbstraction.cs" />
     <Compile Include="Helpers\ColorConverter.cs" />
+    <Compile Include="Helpers\CornerHelper.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />

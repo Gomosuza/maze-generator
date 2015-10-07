@@ -2,6 +2,7 @@ using System;
 using MazeGenerator.Generator;
 using Microsoft.Xna.Framework;
 using Engine;
+using Engine.Diagnostics;
 using Engine.Input;
 using Engine.Rendering;
 using Engine.Rendering.Brushes;
@@ -23,6 +24,7 @@ namespace MazeGenerator
 		private readonly Mesh _floor;
 		private readonly Brush _floorBrush;
 		private readonly Mesh _maze;
+		private readonly DebugMessageBuilder _messageBuilder;
 		private readonly int _offsetX;
 		private readonly int _offsetY;
 		private readonly Brush _wallBrush;
@@ -31,8 +33,9 @@ namespace MazeGenerator
 
 		#region Constructors
 
-		public WorldScene(IRenderContext renderContext)
+		public WorldScene(IRenderContext renderContext, DebugMessageBuilder messageBuilder)
 		{
+			_messageBuilder = messageBuilder;
 			// we want to use different textures for walls/floor
 			var wallMeshBuilder = new TexturedMeshDescriptionBuilder();
 			var floorMeshBuilder = new TexturedMeshDescriptionBuilder();
@@ -81,12 +84,17 @@ namespace MazeGenerator
 
 		public void Render(IRenderContext renderContext, GameTime dt)
 		{
-			renderContext.RenderContext3D.DrawMesh(_maze, Matrix.Identity, _wallBrush);
-			renderContext.RenderContext3D.DrawMesh(_floor, Matrix.Identity, _floorBrush);
+			var p = new Pen(Color.Black);
+			renderContext.RenderContext3D.DrawMesh(_maze, Matrix.Identity, _wallBrush, p);
+			renderContext.RenderContext3D.DrawMesh(_floor, Matrix.Identity, _floorBrush, p);
 		}
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
 		{
+			var v = _maze.Vertices + _floor.Vertices;
+			var p = _maze.Primitives + _floor.Primitives;
+			_messageBuilder.StringBuilder.AppendLine($"Total Vertices: {v}");
+			_messageBuilder.StringBuilder.AppendLine($"Total Primitives: {p}");
 		}
 
 		/// <summary>
@@ -123,7 +131,7 @@ namespace MazeGenerator
 				}
 
 				if (xp < 0 || xp >= w ||
-					yp < 0 || yp >= h)
+				    yp < 0 || yp >= h)
 				{
 					continue;
 				}

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Engine.Helpers;
 using Engine.Input;
 using Engine.Rendering;
 
@@ -56,28 +57,9 @@ namespace Engine.Diagnostics
 			Vector2 position;
 			Vector2 origin;
 			var screenSize = new Vector2(renderContext.GraphicsDeviceManager.PreferredBackBufferWidth, renderContext.GraphicsDeviceManager.PreferredBackBufferHeight);
-			switch (_corner)
-			{
-				case Corner.TopLeft:
-					position = Vector2.Zero;
-					origin = Vector2.Zero;
-					break;
-				case Corner.TopRight:
-					position = new Vector2(screenSize.X, 0);
-					origin = new Vector2(1, 0);
-					break;
-				case Corner.BottomRight:
-					position = screenSize;
-					origin = Vector2.One;
-					break;
-				case Corner.BottomLeft:
-					position = new Vector2(0, screenSize.Y);
-					origin = new Vector2(0, 1);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-			renderContext.RenderContext2D.DrawString($"FPS: {Math.Round(AverageFramesPerSecond):000}", position, origin, _fontColor, FontSize.Tiny);
+			CornerHelper.GetPositionAndOrigin(_corner, screenSize, out position, out origin);
+
+			renderContext.RenderContext2D.DrawString($"FPS: {Math.Round(AverageFramesPerSecond):000}", position, origin, _fontColor, FontSize.Small);
 		}
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
