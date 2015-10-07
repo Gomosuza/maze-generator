@@ -82,6 +82,21 @@ namespace Engine
 				component.Render(RenderContext, gameTime);
 			}
 			RenderContext.Detach();
+			if (RenderContext.RenderTarget != null)
+			{
+				// user has actually set a rendertarget, since this is the default render context we will now draw it on screen
+				var texture = RenderContext.RenderTarget;
+
+				// force-draw to backbuffer
+				RenderContext.RenderTarget = null;
+
+				RenderContext.Attach();
+
+				RenderContext.RenderContext2D.DrawTexture(texture, new Rectangle(0, 0, GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight), Color.White);
+				RenderContext.Detach();
+
+				RenderContext.RenderTarget = texture;
+			}
 		}
 
 		protected override void Initialize()

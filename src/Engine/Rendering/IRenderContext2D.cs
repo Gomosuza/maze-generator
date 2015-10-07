@@ -58,6 +58,8 @@ namespace Engine.Rendering
 		/// <param name="fontSize"></param>
 		Vector2 MeasureString(string message, FontSize fontSize);
 
+		void DrawTexture(RenderTarget2D texture, Rectangle rectangle, Color color, float layerDepth = 0);
+
 		#endregion
 	}
 }

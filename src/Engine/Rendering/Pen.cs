@@ -25,12 +25,16 @@ namespace Engine.Rendering
 
 		#endregion
 
-		#region Methods
+		#region Properties
 
 		internal override bool IsPrepared
 		{
 			get { return _brush.IsPrepared; }
 		}
+
+		#endregion
+
+		#region Methods
 
 		/// <summary>
 		/// Configures the given effect to use this brush.

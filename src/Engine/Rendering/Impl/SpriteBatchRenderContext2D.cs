@@ -63,6 +63,11 @@ namespace Engine.Rendering.Impl
 			_entities.Add(new TextureEntity2D(texture, position, null, color, 0f, origin * new Vector2(texture.Width, texture.Height), scale, SpriteEffects.None, layerDepth));
 		}
 
+		public void DrawTexture(RenderTarget2D texture, Rectangle rectangle, Color color, float layerDepth = 0)
+		{
+			_entities.Add(new TextureEntity2D(texture, rectangle, color, layerDepth));
+		}
+
 		public Vector2 MeasureString(string message, FontSize fontSize)
 		{
 			float scale;
