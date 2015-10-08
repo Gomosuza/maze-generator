@@ -44,6 +44,7 @@
     </Compile>
     <Compile Include="Corner.cs" />
     <Compile Include="Datastructures\Quadtree\INode.cs" />
+    <Compile Include="Datastructures\Quadtree\IQuadtreeElement.cs" />
     <Compile Include="Datastructures\Quadtree\Leaf.cs" />
     <Compile Include="Datastructures\Quadtree\Node.cs" />
     <Compile Include="Datastructures\Quadtree\Quadtree.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="IComponent.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />
+    <Compile Include="Physics\Collision\CollisionEngine.cs" />
+    <Compile Include="Physics\Collision\ICollidable.cs" />
     <Compile Include="Rendering\Brush.cs" />
     <Compile Include="Rendering\Brushes\SolidColorBrush.cs" />
     <Compile Include="Rendering\Brushes\TexturedBrush.cs" />

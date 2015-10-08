@@ -24,7 +24,8 @@ namespace Engine.Rendering.Helpers
 
 		#region Constructors
 
-		public TextureEntity2D(Texture2D texture, Rectangle position, Color color, float layerDepth) : base(layerDepth)
+		public TextureEntity2D(Texture2D texture, Rectangle position, Color color, float layerDepth)
+			: base(layerDepth)
 		{
 			_texture = texture;
 			_rectangle = position;
