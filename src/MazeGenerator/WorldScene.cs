@@ -49,6 +49,7 @@ namespace MazeGenerator
 			// we want the center of the maze to be at 0,0
 			_offsetX = width / 2;
 			_offsetY = height / 2;
+
 			for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)

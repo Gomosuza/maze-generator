@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Core;
@@ -20,13 +21,15 @@ namespace MazeGenerator
 		#region Fields
 
 		private readonly Keys _backward;
-		private readonly Keys _boost;
+		private readonly Keys _sprint;
 		private readonly Keys _down;
 		private readonly Keys _forward;
 		private readonly Keys _left;
 		private readonly Keys _right;
 		private readonly Keys _toggleCamera;
 		private readonly Keys _up;
+		private readonly Keys _toggleCellMerging;
+		private readonly Keys _toggleCulling;
 
 		private FirstPersonCamera _camera;
 
@@ -36,6 +39,7 @@ namespace MazeGenerator
 
 		public MazeGenerator3DGame()
 		{
+			Window.Title = "Maze Generator";
 			var fileName = "settings.ini";
 			var exe = GetType().Assembly;
 			fileName = Path.Combine(exe.GetDirectory(), fileName);
@@ -61,13 +65,15 @@ namespace MazeGenerator
 			IsMouseVisible = false;
 
 			if (!ReadKey(fileName, "input", "Forward", out _forward) ||
-			    !ReadKey(fileName, "input", "Left", out _left) ||
-			    !ReadKey(fileName, "input", "Backward", out _backward) ||
-			    !ReadKey(fileName, "input", "Right", out _right) ||
-			    !ReadKey(fileName, "input", "Up", out _up) ||
-			    !ReadKey(fileName, "input", "Down", out _down) ||
-			    !ReadKey(fileName, "input", "ToggleCamera", out _toggleCamera) ||
-			    !ReadKey(fileName, "input", "Boost", out _boost))
+				!ReadKey(fileName, "input", "Left", out _left) ||
+				!ReadKey(fileName, "input", "Backward", out _backward) ||
+				!ReadKey(fileName, "input", "Right", out _right) ||
+				!ReadKey(fileName, "input", "Up", out _up) ||
+				!ReadKey(fileName, "input", "Down", out _down) ||
+				!ReadKey(fileName, "input", "Sprint", out _sprint) ||
+				!ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
+				!ReadKey(fileName, "options", "ToggleCellMerging", out _toggleCellMerging) ||
+				!ReadKey(fileName, "options", "ToggleCulling", out _toggleCulling))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -101,7 +107,7 @@ namespace MazeGenerator
 			Add(world);
 			Add(new GridAxis(RenderContext, true));
 
-			UpdateWindowTitle();
+			UpdateDetails();
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -118,6 +124,8 @@ namespace MazeGenerator
 				Exit();
 			}
 #endif
+			var msgBuilder = Components.OfType<DebugMessageBuilder>().First();
+			msgBuilder.StringBuilder.Append(_details);
 			HandleInput(gameTime);
 		}
 
@@ -137,7 +145,17 @@ namespace MazeGenerator
 			if (KeyboardManager.IsKeyPressed(_toggleCamera))
 			{
 				ToggleCameraMode();
-				UpdateWindowTitle();
+				UpdateDetails();
+			}
+			if (KeyboardManager.IsKeyPressed(_toggleCellMerging))
+			{
+				ToggleCellMerging();
+				UpdateDetails();
+			}
+			if (KeyboardManager.IsKeyPressed(_toggleCulling))
+			{
+				ToggleCulling();
+				UpdateDetails();
 			}
 			var time = (float)dt.ElapsedGameTime.TotalMilliseconds / 1000f;
 			var delta = MouseManager.PositionDelta;
@@ -156,7 +174,7 @@ namespace MazeGenerator
 			_camera.AddVerticalRotation(rotationX * time / 50f);
 
 			float stepsX = 0, stepsZ = 0, stepsY = 0;
-			var move = KeyboardManager.IsKeyDown(_boost) ? 1.5f : 0.5f;
+			var move = KeyboardManager.IsKeyDown(_sprint) ? 1.5f : 0.5f;
 			if (KeyboardManager.IsKeyDown(_left))
 			{
 				stepsX -= move;
@@ -189,6 +207,16 @@ namespace MazeGenerator
 			_camera.Update(dt);
 		}
 
+		private void ToggleCulling()
+		{
+			_culling = !_culling;
+		}
+
+		private void ToggleCellMerging()
+		{
+			_cellMerging = !_cellMerging;
+		}
+
 		private void ToggleCameraMode()
 		{
 			var h = _camera.UpDownRotation;
@@ -207,10 +235,16 @@ namespace MazeGenerator
 			_camera.SetRotation(h, v);
 		}
 
-		private void UpdateWindowTitle()
+		private void UpdateDetails()
 		{
-			Window.Title = $"Maze Generator - {_toggleCamera} to toggle camera. Current mode: {_camera.Mode}";
+			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} " + Environment.NewLine +
+						$"Cell vertex merging ({_toggleCellMerging}): {(_cellMerging ? "On" : "Off")}" + Environment.NewLine +
+						$"Culling ({_toggleCulling}): {(_culling ? "On" : "Off")}";
 		}
+
+		private string _details;
+		private bool _cellMerging;
+		private bool _culling;
 
 		#endregion
 	}

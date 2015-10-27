@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +14,7 @@ namespace Engine.Datastructures.Quadtree
 		#region Fields
 
 		/// <summary>
-		/// The maximum amount of objects, before the lead is replaced by subnodes.
+		/// The maximum amount of objects, before the leaf is replaced by subnodes.
 		/// </summary>
 		private const int MaxElementCount = 50;
 
@@ -47,14 +48,28 @@ namespace Engine.Datastructures.Quadtree
 			if (_elements.Count > MaxElementCount)
 			{
 				var children = new Node<T>[4];
-				// TODO: scatter elements across children
-				//_parent.ReplaceChild(this, new Node<T>(children));
+				_parent.ReplaceChild(this, new Node<T>(BoundingBox, _parent, children));
 			}
 		}
 
 		public void Remove(T element)
 		{
 			_elements.Remove(element);
+		}
+
+		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		{
+			if (!BoundingBox.Intersects(boundingBox))
+				yield break;
+			foreach (var e in _elements)
+			{
+				yield return e;
+			}
+		}
+
+		public void ReplaceChild(Leaf<T> find, Node<T> replacement)
+		{
+			throw new NotSupportedException();
 		}
 
 		#endregion

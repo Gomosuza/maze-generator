@@ -42,7 +42,7 @@ namespace Engine.Datastructures.Quadtree
 		/// <returns></returns>
 		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
-			throw new System.NotImplementedException();
+			return _root.GetIntersectingElements(boundingBox);
 		}
 
 		public void Remove(T element)
