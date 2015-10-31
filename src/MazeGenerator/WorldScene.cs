@@ -63,10 +63,21 @@ namespace MazeGenerator
 					}
 					else if (c.Mode == CellMode.Empty)
 					{
-						floorMeshBuilder.AddPlane(cellBox, Plane.NegativeY, false, tileSize);
+						// optimization: instead of using one plane per cell we just create one big plane for this chunk later
+						//floorMeshBuilder.AddPlane(cellBox, Plane.NegativeY, false, tileSize);
 					}
 				}
 			}
+
+			// generate one big floor plane for this chunk
+
+			// get a boundingbox that contains the entire chunk by using CreateMerged on two cells that are at the opposite end of the chunk
+			var topLeft = Cells[0, 0];
+			var bottomRight = Cells[width - 1, height - 1];
+			var merged = BoundingBox.CreateMerged(GetBBoxForCell(topLeft, _offsetX, _offsetY), GetBBoxForCell(bottomRight, _offsetX, _offsetY));
+
+			floorMeshBuilder.AddPlane(merged, Plane.NegativeY, false, tileSize);
+
 			_maze = renderContext.MeshCreator.CreateMesh(wallMeshBuilder);
 			_floor = renderContext.MeshCreator.CreateMesh(floorMeshBuilder);
 			_wallBrush = new TexturedBrush("default");
@@ -132,7 +143,7 @@ namespace MazeGenerator
 				}
 
 				if (xp < 0 || xp >= w ||
-				    yp < 0 || yp >= h)
+					yp < 0 || yp >= h)
 				{
 					continue;
 				}
