@@ -77,11 +77,11 @@ namespace Engine.Diagnostics
 					position.Y += _corner == Corner.BottomRight ? -h : h;
 				}
 			}
-			StringBuilder.Clear();
 		}
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
 		{
+			StringBuilder.Clear();
 		}
 
 		#endregion
