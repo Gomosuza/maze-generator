@@ -11,15 +11,15 @@ namespace Engine.Physics.Collision
 		#region Properties
 
 		/// <summary>
-		/// Returns true if the collision object is static in the world and will never move, otherwise returns false.
-		/// </summary>
-		bool IsStatic { get; }
-
-		/// <summary>
 		/// A bounding box that must contain the collidable object at all times.
 		/// It will be used in the first level of collision tests.
 		/// </summary>
 		new BoundingBox BoundingBox { get; }
+
+		/// <summary>
+		/// Returns true if the collision object is static in the world and will never move, otherwise returns false.
+		/// </summary>
+		bool IsStatic { get; }
 
 		#endregion
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Engine.Input;
@@ -64,6 +65,12 @@ namespace Engine
 		public void Add(IComponent component)
 		{
 			_components.Add(component);
+		}
+
+		public IEnumerable<T> GetComponents<T>()
+			where T : IComponent
+		{
+			return _components.OfType<T>();
 		}
 
 		public void Remove(IComponent component)

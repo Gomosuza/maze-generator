@@ -17,7 +17,8 @@ namespace Engine.Datastructures.Quadtree
 
 		#region Constructors
 
-		public Node(BoundingBox area, INode<T> parent, INode<T>[] children) : this(area, parent)
+		public Node(BoundingBox area, INode<T> parent, INode<T>[] children)
+			: this(area, parent)
 		{
 			if (children == null || children.Length != 4)
 			{
@@ -59,6 +60,11 @@ namespace Engine.Datastructures.Quadtree
 			}
 		}
 
+		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		{
+			return _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
+		}
+
 		public void Remove(T element)
 		{
 			var children = _children.Where(c => c.BoundingBox.Intersects(element.BoundingBox)).ToList();
@@ -70,11 +76,6 @@ namespace Engine.Datastructures.Quadtree
 			{
 				// TODO: remove from current node.
 			}
-		}
-
-		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
-		{
-			return _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
 		}
 
 		public void ReplaceChild(Leaf<T> find, Node<T> replacement)

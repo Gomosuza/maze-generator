@@ -12,7 +12,6 @@ namespace Engine.Physics.Collision
 		#region Fields
 
 		private readonly List<ICollidable> _collidables;
-
 		private readonly Quadtree<ICollidable> _tree;
 
 		#endregion

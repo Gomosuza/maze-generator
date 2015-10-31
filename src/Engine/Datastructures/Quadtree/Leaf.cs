@@ -52,19 +52,21 @@ namespace Engine.Datastructures.Quadtree
 			}
 		}
 
-		public void Remove(T element)
-		{
-			_elements.Remove(element);
-		}
-
 		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			if (!BoundingBox.Intersects(boundingBox))
+			{
 				yield break;
+			}
 			foreach (var e in _elements)
 			{
 				yield return e;
 			}
+		}
+
+		public void Remove(T element)
+		{
+			_elements.Remove(element);
 		}
 
 		public void ReplaceChild(Leaf<T> find, Node<T> replacement)

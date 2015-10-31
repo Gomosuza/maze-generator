@@ -21,17 +21,20 @@ namespace MazeGenerator
 		#region Fields
 
 		private readonly Keys _backward;
-		private readonly Keys _sprint;
 		private readonly Keys _down;
 		private readonly Keys _forward;
 		private readonly Keys _left;
 		private readonly Keys _right;
+		private readonly Keys _sprint;
 		private readonly Keys _toggleCamera;
-		private readonly Keys _up;
 		private readonly Keys _toggleCellMerging;
 		private readonly Keys _toggleCulling;
+		private readonly Keys _up;
 
 		private FirstPersonCamera _camera;
+		private bool _cellMerging;
+		private bool _culling;
+		private string _details;
 
 		#endregion
 
@@ -65,15 +68,15 @@ namespace MazeGenerator
 			IsMouseVisible = false;
 
 			if (!ReadKey(fileName, "input", "Forward", out _forward) ||
-				!ReadKey(fileName, "input", "Left", out _left) ||
-				!ReadKey(fileName, "input", "Backward", out _backward) ||
-				!ReadKey(fileName, "input", "Right", out _right) ||
-				!ReadKey(fileName, "input", "Up", out _up) ||
-				!ReadKey(fileName, "input", "Down", out _down) ||
-				!ReadKey(fileName, "input", "Sprint", out _sprint) ||
-				!ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
-				!ReadKey(fileName, "options", "ToggleCellMerging", out _toggleCellMerging) ||
-				!ReadKey(fileName, "options", "ToggleCulling", out _toggleCulling))
+			    !ReadKey(fileName, "input", "Left", out _left) ||
+			    !ReadKey(fileName, "input", "Backward", out _backward) ||
+			    !ReadKey(fileName, "input", "Right", out _right) ||
+			    !ReadKey(fileName, "input", "Up", out _up) ||
+			    !ReadKey(fileName, "input", "Down", out _down) ||
+			    !ReadKey(fileName, "input", "Sprint", out _sprint) ||
+			    !ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
+			    !ReadKey(fileName, "options", "ToggleCellMerging", out _toggleCellMerging) ||
+			    !ReadKey(fileName, "options", "ToggleCulling", out _toggleCulling))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -124,7 +127,7 @@ namespace MazeGenerator
 				Exit();
 			}
 #endif
-			var msgBuilder = Components.OfType<DebugMessageBuilder>().First();
+			var msgBuilder = GetComponents<DebugMessageBuilder>().First();
 			msgBuilder.StringBuilder.Append(_details);
 			HandleInput(gameTime);
 		}
@@ -207,16 +210,6 @@ namespace MazeGenerator
 			_camera.Update(dt);
 		}
 
-		private void ToggleCulling()
-		{
-			_culling = !_culling;
-		}
-
-		private void ToggleCellMerging()
-		{
-			_cellMerging = !_cellMerging;
-		}
-
 		private void ToggleCameraMode()
 		{
 			var h = _camera.UpDownRotation;
@@ -235,16 +228,22 @@ namespace MazeGenerator
 			_camera.SetRotation(h, v);
 		}
 
+		private void ToggleCellMerging()
+		{
+			_cellMerging = !_cellMerging;
+		}
+
+		private void ToggleCulling()
+		{
+			_culling = !_culling;
+		}
+
 		private void UpdateDetails()
 		{
 			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} " + Environment.NewLine +
-						$"Cell vertex merging ({_toggleCellMerging}): {(_cellMerging ? "On" : "Off")}" + Environment.NewLine +
-						$"Culling ({_toggleCulling}): {(_culling ? "On" : "Off")}";
+			           $"Cell vertex merging ({_toggleCellMerging}): {(_cellMerging ? "On" : "Off")}" + Environment.NewLine +
+			           $"Culling ({_toggleCulling}): {(_culling ? "On" : "Off")}";
 		}
-
-		private string _details;
-		private bool _cellMerging;
-		private bool _culling;
 
 		#endregion
 	}
