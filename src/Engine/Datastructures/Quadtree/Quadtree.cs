@@ -49,7 +49,7 @@ namespace Engine.Datastructures.Quadtree
 		/// </summary>
 		/// <param name="boundingBox"></param>
 		/// <returns></returns>
-		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		public List<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			return Root.GetIntersectingElements(boundingBox);
 		}

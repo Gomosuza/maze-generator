@@ -5,6 +5,9 @@ using Engine.Physics.Collision;
 
 namespace MazeGenerator.Entities
 {
+	/// <summary>
+	/// Represents a piece of wall for a single cell for collision purpose.
+	/// </summary>
 	public class Wall : ICollidable
 	{
 		#region Fields

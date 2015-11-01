@@ -44,15 +44,39 @@ namespace MazeGenerator.Entities
 
 		public void CollisionResponse(ICollidable other)
 		{
-			if (other is Wall)
+			var wall = other as Wall;
+			if (wall != null)
 			{
-				var w = (Wall)other;
-
-				var last = _last;
 				var current = _camera.GetPosition();
 
-				// TODO: resetting position feels wrong because player gets "stuck" in walls. Instead find the maximum distance the player can walk towards a wall and position him there
-				_camera.SetPosition(last);
+				var bbox = wall.BoundingBox;
+
+				// player must be somewhere between _last and current but current could be inside bbox, so clamp
+				var updated = current;
+
+				const float minDistanceFromWall = 1f;
+
+				if (_last.X <= bbox.Min.X - minDistanceFromWall && current.X >= bbox.Min.X - minDistanceFromWall)
+				{
+					// player was on left and moved right
+					updated.X = bbox.Min.X - minDistanceFromWall;
+				}
+				else if (_last.X >= bbox.Max.X + minDistanceFromWall && current.X <= bbox.Max.X + minDistanceFromWall)
+				{
+					// player was on right and moved left
+					updated.X = bbox.Max.X + minDistanceFromWall;
+				}
+				if (_last.Z <= bbox.Min.Z - minDistanceFromWall && current.Z >= bbox.Min.Z - minDistanceFromWall)
+				{
+					// player was in front and moved back
+					updated.Z = bbox.Min.Z - minDistanceFromWall;
+				}
+				else if (_last.Z >= bbox.Max.Z + minDistanceFromWall && current.Z <= bbox.Max.Z + minDistanceFromWall)
+				{
+					// player was back and moved forward
+					updated.Z = bbox.Max.Z + minDistanceFromWall;
+				}
+				_camera.SetPosition(updated);
 			}
 			else
 			{
