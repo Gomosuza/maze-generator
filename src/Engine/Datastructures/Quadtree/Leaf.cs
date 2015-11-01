@@ -47,7 +47,7 @@ namespace Engine.Datastructures.Quadtree
 			_elements.Add(element);
 			if (_elements.Count > MaxElementCount)
 			{
-				var children = new Node<T>[4];
+				var children = new INode<T>[4];
 				_parent.ReplaceChild(this, new Node<T>(BoundingBox, _parent, children));
 			}
 		}
@@ -60,7 +60,10 @@ namespace Engine.Datastructures.Quadtree
 			}
 			foreach (var e in _elements)
 			{
-				yield return e;
+				if (e.BoundingBox.Intersects(boundingBox))
+				{
+					yield return e;
+				}
 			}
 		}
 
@@ -72,7 +75,10 @@ namespace Engine.Datastructures.Quadtree
 			}
 			foreach (var e in _elements)
 			{
-				yield return e;
+				if (e.BoundingBox.Intersects(frustum))
+				{
+					yield return e;
+				}
 			}
 		}
 
