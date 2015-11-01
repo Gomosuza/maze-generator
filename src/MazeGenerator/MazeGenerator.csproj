@@ -59,6 +59,7 @@
     <Compile Include="Generator\CellMode.cs" />
     <Compile Include="Generator\Cell.cs" />
     <Compile Include="Generator\GrowingTreeMazeGenerator.cs" />
+    <Compile Include="MazeChunk.cs" />
     <Compile Include="MazeGenerator3DGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

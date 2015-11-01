@@ -4,27 +4,27 @@ using Microsoft.Xna.Framework;
 namespace Engine.Datastructures.Quadtree
 {
 	/// <summary>
-	/// Generic quadtree implemementation.
+	/// Generic quadtree implemementation that can grow past its initial bounds.
 	/// </summary>
 	public class Quadtree<T>
 		where T : IQuadtreeElement
 	{
-		#region Fields
-
-		private readonly INode<T> _root;
-
-		#endregion
-
 		#region Constructors
 
 		/// <summary>
 		/// Creates a new instance of the quadtree in the given area.
 		/// </summary>
-		/// <param name="area">All content of this quad tree must be part of the bounding box. Objects outside are not allowed.</param>
+		/// <param name="area">Initial area. If objects outside it are added the quadtree is automatically increased.</param>
 		public Quadtree(BoundingBox area)
 		{
-			_root = new Leaf<T>(area, null);
+			Root = new Leaf<T>(area, null);
 		}
+
+		#endregion
+
+		#region Properties
+
+		public INode<T> Root { get; }
 
 		#endregion
 
@@ -32,22 +32,32 @@ namespace Engine.Datastructures.Quadtree
 
 		public void Add(T element)
 		{
-			_root.Add(element);
+			Root.Add(element);
 		}
 
 		/// <summary>
-		/// Returns the set of elements that intersects with the specific bounding box.
+		/// Returns the set of elements that intersects with or are contained by the specific bounding box.
 		/// </summary>
 		/// <param name="boundingBox"></param>
 		/// <returns></returns>
 		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
-			return _root.GetIntersectingElements(boundingBox);
+			return Root.GetIntersectingElements(boundingBox);
+		}
+
+		/// <summary>
+		/// Returns all elements that intersect with or are contained by the frustum.
+		/// </summary>
+		/// <param name="frustum"></param>
+		/// <returns></returns>
+		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		{
+			return Root.GetIntersectingElements(frustum);
 		}
 
 		public void Remove(T element)
 		{
-			_root.Remove(element);
+			Root.Remove(element);
 		}
 
 		#endregion

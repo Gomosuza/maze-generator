@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework;
 
 namespace Engine.Datastructures.Quadtree
 {
+	/// <summary>
+	/// A node contains 4 children (either further nodes or leaves) and may also contain elements (that are too big for child nodes).
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class Node<T> : INode<T>
 		where T : IQuadtreeElement
 	{
@@ -63,6 +67,11 @@ namespace Engine.Datastructures.Quadtree
 		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			return _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
+		}
+
+		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		{
+			return _children.SelectMany(c => c.GetIntersectingElements(frustum));
 		}
 
 		public void Remove(T element)

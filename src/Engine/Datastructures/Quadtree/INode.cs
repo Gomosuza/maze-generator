@@ -18,7 +18,19 @@ namespace Engine.Datastructures.Quadtree
 		/// <param name="element"></param>
 		void Add(T element);
 
+		/// <summary>
+		/// Returns all elements that intersect with or are contained by the specific bounding box.
+		/// </summary>
+		/// <param name="boundingBox"></param>
+		/// <returns></returns>
 		IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox);
+
+		/// <summary>
+		/// Returns all elements that intersect with or are contained by the frustum.
+		/// </summary>
+		/// <param name="frustum"></param>
+		/// <returns></returns>
+		IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum);
 
 		/// <summary>
 		/// Remove the element.

@@ -64,6 +64,18 @@ namespace Engine.Datastructures.Quadtree
 			}
 		}
 
+		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		{
+			if (!BoundingBox.Intersects(frustum))
+			{
+				yield break;
+			}
+			foreach (var e in _elements)
+			{
+				yield return e;
+			}
+		}
+
 		public void Remove(T element)
 		{
 			_elements.Remove(element);

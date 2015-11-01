@@ -89,6 +89,8 @@ namespace MazeGenerator
 		protected override void Draw(GameTime gameTime)
 		{
 			RenderContext.RenderContext3D.Camera = _camera;
+			var msgBuilder = GetComponents<DebugMessageBuilder>().First();
+			msgBuilder.AppendLine(_details);
 			base.Draw(gameTime);
 		}
 
@@ -102,9 +104,11 @@ namespace MazeGenerator
 			Add(message);
 			var world = new WorldScene(RenderContext, message);
 
-			var box = world.GetEmptyCellCloseToCenter();
 			const int playerHeight = 2;
-			var center = new Vector3(box.Max.X + box.Min.X, 0, box.Max.Z + box.Min.Z) / 2;
+
+			// position the player in the center of the starting cell
+			var start = world.GetStartCell().GetBoundingBox();
+			var center = (start.Min + start.Max) / 2f;
 			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(center.X, playerHeight, center.Z), FirstPersonCamera.FirstPersonMode.Person);
 
 			Add(world);
@@ -127,8 +131,6 @@ namespace MazeGenerator
 				Exit();
 			}
 #endif
-			var msgBuilder = GetComponents<DebugMessageBuilder>().First();
-			msgBuilder.StringBuilder.Append(_details);
 			HandleInput(gameTime);
 		}
 

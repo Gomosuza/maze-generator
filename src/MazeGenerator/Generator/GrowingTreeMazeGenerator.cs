@@ -37,7 +37,7 @@ namespace MazeGenerator.Generator
 			if (startingCell.Mode != CellMode.Undefined &&
 			    startingCell.Mode != CellMode.Empty)
 			{
-				throw new ArgumentException($"{nameof(startingCell)} must be {CellMode.Undefined}");
+				throw new ArgumentException($"{nameof(startingCell)} must be {CellMode.Undefined} or {CellMode.Empty}");
 			}
 
 			var workingList = new List<Cell>

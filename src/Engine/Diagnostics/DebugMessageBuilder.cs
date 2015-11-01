@@ -20,6 +20,8 @@ namespace Engine.Diagnostics
 		private readonly Color _color;
 		private readonly Corner _corner;
 
+		private readonly StringBuilder _stringBuilder;
+
 		#endregion
 
 		#region Constructors
@@ -33,18 +35,8 @@ namespace Engine.Diagnostics
 		{
 			_color = color;
 			_corner = corner;
-			StringBuilder = new StringBuilder();
+			_stringBuilder = new StringBuilder();
 		}
-
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		/// Add your content to the builder.
-		/// Recommended to always use AppendLine, so the next added content isn't added to the previous line.
-		/// </summary>
-		public StringBuilder StringBuilder { get; }
 
 		#endregion
 
@@ -52,7 +44,8 @@ namespace Engine.Diagnostics
 
 		public void Render(IRenderContext renderContext, GameTime dt)
 		{
-			var message = StringBuilder.ToString();
+			var message = _stringBuilder.ToString();
+			_stringBuilder.Clear();
 			Vector2 position;
 			Vector2 origin;
 			var screenSize = new Vector2(renderContext.GraphicsDeviceManager.PreferredBackBufferWidth, renderContext.GraphicsDeviceManager.PreferredBackBufferHeight);
@@ -81,7 +74,16 @@ namespace Engine.Diagnostics
 
 		public void Update(KeyboardManager keyboard, MouseManager mouse, GameTime dt)
 		{
-			StringBuilder.Clear();
+		}
+
+		/// <summary>
+		/// Adds the content to the message builder.
+		/// Note that this method should always be called from Render methods as it will be cleared only in Render.
+		/// </summary>
+		/// <param name="content"></param>
+		public void AppendLine(string content)
+		{
+			_stringBuilder.AppendLine(content);
 		}
 
 		#endregion
