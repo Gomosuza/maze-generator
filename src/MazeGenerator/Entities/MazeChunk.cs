@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Engine;
 using Engine.Datastructures.Quadtree;
 using Engine.Input;
+using Engine.Physics.Collision;
 using Engine.Rendering;
 using Engine.Rendering.Brushes;
 using Engine.Rendering.Meshes;
@@ -56,11 +57,12 @@ namespace MazeGenerator.Entities
 		/// <param name="endX">The (excluded) end x value inside the cell array. Cells from <paramref name="startXIndex"/> to <paramref name="endX"/> - 1 are used.</param>
 		/// <param name="endY">The (excluded) end y value inside the cell array. Cells from <paramref name="startYIndex"/> to <paramref name="endY"/> - 1 are used.</param>
 		/// <param name="id">The id is used to give each chunk floor a different color so the user can easily see where chunks end.</param>
-		public MazeChunk(IRenderContext renderContext, Cell[,] cells, int startXIndex, int startYIndex, int endX, int endY, int id)
+		/// <param name="collisionEngine">The collision engine to which to add the walls to.</param>
+		public MazeChunk(IRenderContext renderContext, Cell[,] cells, int startXIndex, int startYIndex, int endX, int endY, int id, CollisionEngine collisionEngine)
 		{
 			var floorMeshBuilder = new TexturedMeshDescriptionBuilder();
 
-			var wallMeshBuilder = GenerateWallMesh(cells, startXIndex, startYIndex, endX, endY);
+			var wallMeshBuilder = GenerateWallMesh(cells, startXIndex, startYIndex, endX, endY, collisionEngine);
 
 			// get a boundingbox that contains the entire chunk by using CreateMerged on two cells that are at the opposite end of the chunk
 			var topLeft = cells[startXIndex, startYIndex];
@@ -218,8 +220,9 @@ namespace MazeGenerator.Entities
 		/// <param name="startYIndex"></param>
 		/// <param name="endX"></param>
 		/// <param name="endY"></param>
+		/// <param name="collisionEngine"></param>
 		/// <returns></returns>
-		public static IMeshDescription GenerateWallMesh(Cell[,] cells, int startXIndex, int startYIndex, int endX, int endY)
+		public static IMeshDescription GenerateWallMesh(Cell[,] cells, int startXIndex, int startYIndex, int endX, int endY, CollisionEngine collisionEngine)
 		{
 			var skip = MergeCells(cells, startXIndex, startYIndex, endX, endY);
 			var wallMeshBuilder = new TexturedMeshDescriptionBuilder();
@@ -261,6 +264,7 @@ namespace MazeGenerator.Entities
 									count--;
 								} while (count > 0);
 								wallMeshBuilder.AddBox(cellBox, TileSize);
+								collisionEngine.Add(new Wall(cellBox));
 								continue;
 							}
 						}
@@ -284,11 +288,13 @@ namespace MazeGenerator.Entities
 								count--;
 							} while (count > 0);
 							wallMeshBuilder.AddBox(cellBox, TileSize);
+							collisionEngine.Add(new Wall(cellBox));
 							continue;
 						}
 
 						// no merging possible, just place default cell sized box
 						wallMeshBuilder.AddBox(cellBox, TileSize);
+						collisionEngine.Add(new Wall(cellBox));
 					}
 				}
 			}

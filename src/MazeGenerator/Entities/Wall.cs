@@ -1,34 +1,18 @@
-using System;
-using MazeGenerator.Generator;
 using Microsoft.Xna.Framework;
 using Engine.Physics.Collision;
 
 namespace MazeGenerator.Entities
 {
 	/// <summary>
-	/// Represents a piece of wall for a single cell for collision purpose.
+	/// Represents a piece of wall for collision purpose.
 	/// </summary>
 	public class Wall : ICollidable
 	{
-		#region Fields
-
-		private readonly Cell _cell;
-
-		#endregion
-
 		#region Constructors
 
-		public Wall(Cell c)
+		public Wall(BoundingBox bbox)
 		{
-			if (c == null)
-			{
-				throw new ArgumentNullException(nameof(c));
-			}
-			if (c.Mode != CellMode.Wall)
-			{
-				throw new NotSupportedException();
-			}
-			_cell = c;
+			BoundingBox = bbox;
 		}
 
 		#endregion
@@ -37,7 +21,7 @@ namespace MazeGenerator.Entities
 
 		public bool IsStatic => true;
 
-		public BoundingBox BoundingBox => _cell.GetBoundingBox();
+		public BoundingBox BoundingBox { get; }
 
 		#endregion
 

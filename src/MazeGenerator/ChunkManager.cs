@@ -41,18 +41,8 @@ namespace MazeGenerator
 			_quadtree = new Quadtree<MazeChunk>(fullGrid);
 
 			var cells = GenerateNewMaze(width, height);
-			for (int y = 0; y < height; y++)
-			{
-				for (int x = 0; x < width; x++)
-				{
-					var c = cells[x, y];
-					if (c.Mode == CellMode.Wall)
-					{
-						collisionEngine.Add(new Wall(c));
-					}
-				}
-			}
-			var chunks = GenerateChunks(renderContext, cells);
+
+			var chunks = GenerateChunks(renderContext, cells, collisionEngine);
 
 			_totalVertices = chunks.Sum(c => c.Vertices);
 			_totalChunks = chunks.Count;
@@ -95,8 +85,9 @@ namespace MazeGenerator
 		/// </summary>
 		/// <param name="renderContext"></param>
 		/// <param name="cells"></param>
+		/// <param name="collisionEngine"></param>
 		/// <returns></returns>
-		private List<MazeChunk> GenerateChunks(IRenderContext renderContext, Cell[,] cells)
+		private List<MazeChunk> GenerateChunks(IRenderContext renderContext, Cell[,] cells, CollisionEngine collisionEngine)
 		{
 			var maxSize = MazeChunk.ChunkSize;
 			// instead of creating arrays per chunk we point to the source array by using indices, this is far faster and saves ram
@@ -116,7 +107,7 @@ namespace MazeGenerator
 					var endY = Math.Min((y + 1) * maxSize, h);
 
 					var id = y * yCount + x;
-					var chunk = new MazeChunk(renderContext, cells, startX, startY, endX, endY, id);
+					var chunk = new MazeChunk(renderContext, cells, startX, startY, endX, endY, id, collisionEngine);
 					chunks.Add(chunk);
 				}
 			}
