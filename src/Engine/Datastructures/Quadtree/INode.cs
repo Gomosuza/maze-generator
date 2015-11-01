@@ -38,13 +38,6 @@ namespace Engine.Datastructures.Quadtree
 		/// <param name="element"></param>
 		void Remove(T element);
 
-		/// <summary>
-		/// When called allows to replace one child with another one.
-		/// </summary>
-		/// <param name="find"></param>
-		/// <param name="replacement"></param>
-		void ReplaceChild(Leaf<T> find, Node<T> replacement);
-
 		#endregion
 	}
 }

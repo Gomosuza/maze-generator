@@ -32,8 +32,8 @@ namespace MazeGenerator
 		{
 			_messageBuilder = messageBuilder;
 
-			var width = 150;
-			var height = 150;
+			var width = 250;
+			var height = 250;
 
 			var start = new Cell(0, 0).GetBoundingBox();
 			var end = new Cell(width - 1, height - 1).GetBoundingBox();

@@ -48,6 +48,7 @@
     <Compile Include="Datastructures\Quadtree\Leaf.cs" />
     <Compile Include="Datastructures\Quadtree\Node.cs" />
     <Compile Include="Datastructures\Quadtree\Quadtree.cs" />
+    <Compile Include="Datastructures\Quadtree\RootNode.cs" />
     <Compile Include="Diagnostics\DebugMessageBuilder.cs" />
     <Compile Include="Diagnostics\FpsCounter.cs" />
     <Compile Include="GameAbstraction.cs" />

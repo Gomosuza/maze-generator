@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Engine.Datastructures.Quadtree
 {
 	/// <summary>
-	/// Generic quadtree implemementation that can grow past its initial bounds.
+	/// Generic quadtree implemementation that.
 	/// </summary>
 	public class Quadtree<T>
 		where T : IQuadtreeElement
@@ -14,10 +15,10 @@ namespace Engine.Datastructures.Quadtree
 		/// <summary>
 		/// Creates a new instance of the quadtree in the given area.
 		/// </summary>
-		/// <param name="area">Initial area. If objects outside it are added the quadtree is automatically increased.</param>
+		/// <param name="area">Initial area. Objects outside it are not supported.</param>
 		public Quadtree(BoundingBox area)
 		{
-			Root = new Leaf<T>(area, null);
+			Root = new RootNode<T>(area);
 		}
 
 		#endregion
@@ -32,6 +33,14 @@ namespace Engine.Datastructures.Quadtree
 
 		public void Add(T element)
 		{
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+			if (Root.BoundingBox.Contains(element.BoundingBox) == ContainmentType.Disjoint)
+			{
+				throw new NotSupportedException("Object outside quadtree");
+			}
 			Root.Add(element);
 		}
 

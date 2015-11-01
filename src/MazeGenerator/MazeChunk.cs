@@ -24,7 +24,8 @@ namespace MazeGenerator
 		/// </summary>
 		public const int ChunkSize = 25;
 
-		private static readonly Color[] _colors = {
+		private static readonly Color[] _colors =
+		{
 			Color.White,
 			Color.Red,
 			Color.Blue,

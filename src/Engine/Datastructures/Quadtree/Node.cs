@@ -9,12 +9,12 @@ namespace Engine.Datastructures.Quadtree
 	/// A node contains 4 children (either further nodes or leaves) and may also contain elements (that are too big for child nodes).
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class Node<T> : INode<T>
-		where T : IQuadtreeElement
+	public class Node<T> : INode<T> where T : IQuadtreeElement
 	{
 		#region Fields
 
 		private readonly INode<T>[] _children;
+		private readonly List<T> _elements;
 		private readonly INode<T> _parent;
 
 		#endregion
@@ -33,12 +33,9 @@ namespace Engine.Datastructures.Quadtree
 
 		public Node(BoundingBox area, INode<T> parent)
 		{
-			if (parent == null)
-			{
-				throw new ArgumentNullException(nameof(parent));
-			}
 			BoundingBox = area;
 			_parent = parent;
+			_elements = new List<T>();
 		}
 
 		#endregion
@@ -53,6 +50,10 @@ namespace Engine.Datastructures.Quadtree
 
 		public void Add(T element)
 		{
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
 			var child = _children.FirstOrDefault(c => c.BoundingBox.Contains(element.BoundingBox) == ContainmentType.Contains);
 			if (child != null)
 			{
@@ -60,30 +61,61 @@ namespace Engine.Datastructures.Quadtree
 			}
 			else
 			{
-				// TODO: add to current node, as no child can contain it
+				_elements.Add(element);
 			}
 		}
 
 		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
-			return _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
+			if (!BoundingBox.Intersects(boundingBox))
+			{
+				yield break;
+			}
+			var matches = _elements.Where(e => e.BoundingBox.Intersects(boundingBox));
+			foreach (var match in matches)
+			{
+				yield return match;
+			}
+			var moreMatches = _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
+			foreach (var match in moreMatches)
+			{
+				yield return match;
+			}
 		}
 
 		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
 		{
-			return _children.SelectMany(c => c.GetIntersectingElements(frustum));
+			if (!BoundingBox.Intersects(frustum))
+			{
+				yield break;
+			}
+			var matches = _elements.Where(e => e.BoundingBox.Intersects(frustum));
+			foreach (var match in matches)
+			{
+				yield return match;
+			}
+			var moreMatches = _children.SelectMany(c => c.GetIntersectingElements(frustum));
+			foreach (var match in moreMatches)
+			{
+				yield return match;
+			}
 		}
 
 		public void Remove(T element)
 		{
-			var children = _children.Where(c => c.BoundingBox.Intersects(element.BoundingBox)).ToList();
-			foreach (var c in children)
+			if (element == null)
 			{
-				c.Remove(element);
+				throw new ArgumentNullException(nameof(element));
 			}
-			if (!children.Any())
+			// find node where element was added to
+			var node = _children.FirstOrDefault(c => c.BoundingBox.Contains(element.BoundingBox) == ContainmentType.Contains);
+			if (node != null)
 			{
-				// TODO: remove from current node.
+				node.Remove(element);
+			}
+			else
+			{
+				_elements.Remove(element);
 			}
 		}
 
