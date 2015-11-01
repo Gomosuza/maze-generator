@@ -127,9 +127,7 @@ namespace MazeGenerator
 				throw new ArgumentException("Minimum grid size is 5x5.");
 			}
 
-			// TODO: seed while debugging, remove before release
-			var seed = 1;
-			var gen = new GrowingTreeMazeGenerator(seed);
+			var gen = new GrowingTreeMazeGenerator();
 			var cells = new Cell[width, height];
 			for (int y = 0; y < height; y++)
 			{
