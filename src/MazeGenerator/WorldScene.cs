@@ -32,11 +32,11 @@ namespace MazeGenerator
 		{
 			_messageBuilder = messageBuilder;
 
-			var width = 50;
-			var height = 50;
+			var width = 150;
+			var height = 150;
 
 			var start = new Cell(0, 0).GetBoundingBox();
-			var end = new Cell(width, height).GetBoundingBox();
+			var end = new Cell(width - 1, height - 1).GetBoundingBox();
 
 			var fullGrid = BoundingBox.CreateMerged(start, end);
 			_quadtree = new Quadtree<MazeChunk>(fullGrid);
@@ -80,13 +80,37 @@ namespace MazeGenerator
 		{
 		}
 
+		/// <summary>
+		/// Splits the maze into chunks.
+		/// </summary>
+		/// <param name="renderContext"></param>
+		/// <param name="cells"></param>
+		/// <returns></returns>
 		private List<MazeChunk> GenerateChunks(IRenderContext renderContext, Cell[,] cells)
 		{
-			var chunk = new MazeChunk(renderContext, cells);
-			return new List<MazeChunk>
+			var maxSize = MazeChunk.ChunkSize;
+			// instead of creating arrays per chunk we point to the source array by using indices, this is far faster and saves ram
+			var w = cells.GetLength(0);
+			var h = cells.GetLength(1);
+
+			var chunks = new List<MazeChunk>();
+			int yCount = (int)Math.Ceiling(h / (float)maxSize);
+			int xCount = (int)Math.Ceiling(w / (float)maxSize);
+			for (int y = 0; y < yCount; y++)
 			{
-				chunk
-			};
+				for (int x = 0; x < xCount; x++)
+				{
+					var startX = x * maxSize;
+					var startY = y * maxSize;
+					var endX = Math.Min((x + 1) * maxSize, w);
+					var endY = Math.Min((y + 1) * maxSize, h);
+
+					var id = y * yCount + x;
+					var chunk = new MazeChunk(renderContext, cells, startX, startY, endX, endY, id);
+					chunks.Add(chunk);
+				}
+			}
+			return chunks;
 		}
 
 		/// <summary>
@@ -101,7 +125,10 @@ namespace MazeGenerator
 			{
 				throw new ArgumentException("Minimum grid size is 5x5.");
 			}
-			var gen = new GrowingTreeMazeGenerator();
+
+			// TODO: seed while debugging, remove before release
+			var seed = 1;
+			var gen = new GrowingTreeMazeGenerator(seed);
 			var cells = new Cell[width, height];
 			for (int y = 0; y < height; y++)
 			{
