@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Core;
 using Engine.Input;
 using Engine.Rendering.Impl;
 
@@ -12,11 +16,12 @@ namespace Engine
 	/// Adds vital features (keyboard, mouse, content, rendering, etc.).
 	/// Use <see cref="Add"/>/<see cref="Remove"/> to add any further rendering elements.
 	/// </summary>
-	public abstract class GameAbstraction : Game
+	public abstract class GameAbstraction : IDisposable
 	{
 		#region Fields
 
 		private readonly List<IComponent> _components;
+		private readonly Game _game;
 
 		#endregion
 
@@ -24,7 +29,13 @@ namespace Engine
 
 		protected GameAbstraction()
 		{
-			GraphicsDeviceManager = new GraphicsDeviceManager(this)
+			var helper = new XGame();
+			helper.XInitialize += Initialize;
+			helper.XDraw += Draw;
+			helper.XUpdate += Update;
+			_game = helper;
+
+			GraphicsDeviceManager = new GraphicsDeviceManager(_game)
 			{
 				PreferMultiSampling = true
 			};
@@ -34,6 +45,18 @@ namespace Engine
 		#endregion
 
 		#region Properties
+
+		public bool IsActive => _game.IsActive;
+
+		public GameWindow Window => _game.Window;
+
+		public bool IsMouseVisible
+		{
+			get { return _game.IsMouseVisible; }
+			set { _game.IsMouseVisible = value; }
+		}
+
+		public GraphicsDevice GraphicsDevice => _game.GraphicsDevice;
 
 		/// <summary>
 		/// The one and only graphics device manager needed by monogame.
@@ -58,9 +81,21 @@ namespace Engine
 		/// </summary>
 		public RenderTargetBasedRenderContext RenderContext { get; protected set; }
 
+		public ContentManager Content => _game.Content;
+
 		#endregion
 
 		#region Methods
+
+		public void Dispose()
+		{
+			_game.Dispose();
+		}
+
+		public void Exit()
+		{
+			_game.Exit();
+		}
 
 		public void Add(IComponent component)
 		{
@@ -78,9 +113,8 @@ namespace Engine
 			_components.Remove(component);
 		}
 
-		protected override void Draw(GameTime gameTime)
+		protected virtual void Draw(GameTime gameTime)
 		{
-			base.Draw(gameTime);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			RenderContext.Attach();
@@ -106,9 +140,8 @@ namespace Engine
 			}
 		}
 
-		protected override void Initialize()
+		protected virtual void Initialize()
 		{
-			base.Initialize();
 			Mouse.SetPosition(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
 			Content.RootDirectory = "Content";
 			// render to backbuffer by default, but only if user didn't provide a rendercontext already
@@ -118,10 +151,8 @@ namespace Engine
 			}
 		}
 
-		protected override void Update(GameTime gameTime)
+		protected virtual void Update(GameTime gameTime)
 		{
-			base.Update(gameTime);
-
 			// reset mouse to center of screen at each frame if user set it to invisible
 			bool mouseIsAlwaysCentered = !IsMouseVisible && IsActive;
 			var center = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
@@ -138,6 +169,60 @@ namespace Engine
 			{
 				component.Update(KeyboardManager, MouseManager, gameTime);
 			}
+		}
+
+		public void Run()
+		{
+			_game.Run();
+		}
+
+		#endregion
+
+		#region Nested types
+
+		/// <summary>
+		/// We don't want to derive game abstraction from Game as Game contains many properties (like "Services", "Components" that conflict with our own naming system.
+		/// This would potentially lead to someone in a derived class doing "Components.OfType&lt;<see cref="IComponent"/>&gt;()" which will never yield a result as Components is of type <see cref="IGameComponent"/>.
+		/// We don't use <see cref="IGameComponent"/> or other types from monogame as they are overkill for our purpose.
+		/// </summary>
+		private class XGame : Game
+		{
+			#region Methods
+
+			protected override void Initialize()
+			{
+				base.Initialize();
+				XInitialize?.Invoke();
+			}
+
+			protected override void Draw(GameTime gameTime)
+			{
+				base.Draw(gameTime);
+				XDraw?.Invoke(gameTime);
+			}
+
+			protected override void Update(GameTime gameTime)
+			{
+				base.Update(gameTime);
+				XUpdate?.Invoke(gameTime);
+			}
+
+			protected override void Dispose(bool disposing)
+			{
+				base.Dispose(disposing);
+				XInitialize = null;
+				XUpdate = null;
+				XDraw = null;
+			}
+
+			#endregion
+
+			#region Other
+
+			public event GenericEventHandler XInitialize;
+			public event GenericEventHandler<GameTime> XUpdate , XDraw;
+
+			#endregion
 		}
 
 		#endregion
