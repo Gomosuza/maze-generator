@@ -25,25 +25,26 @@ namespace MazeGenerator
 		private readonly Keys _backward;
 		private readonly Keys _down;
 		private readonly Keys _forward;
+		private readonly int _height;
 		private readonly Keys _left;
 		private readonly Keys _right;
 		private readonly Keys _sprint;
 		private readonly Keys _toggleCamera;
-		private readonly Keys _toggleCellMerging;
-		private readonly Keys _toggleCulling;
 		private readonly Keys _up;
 
+		private readonly int _width;
+
 		private FirstPersonCamera _camera;
-		private bool _cellMerging;
-		private bool _culling;
 		private string _details;
 
 		#endregion
 
 		#region Constructors
 
-		public MazeGenerator3DGame()
+		public MazeGenerator3DGame(int width, int height)
 		{
+			_width = width;
+			_height = height;
 			Window.Title = "Maze Generator";
 			var fileName = "settings.ini";
 			var exe = GetType().Assembly;
@@ -76,9 +77,7 @@ namespace MazeGenerator
 			    !ReadKey(fileName, "input", "Up", out _up) ||
 			    !ReadKey(fileName, "input", "Down", out _down) ||
 			    !ReadKey(fileName, "input", "Sprint", out _sprint) ||
-			    !ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
-			    !ReadKey(fileName, "options", "ToggleCellMerging", out _toggleCellMerging) ||
-			    !ReadKey(fileName, "options", "ToggleCulling", out _toggleCulling))
+			    !ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -105,14 +104,11 @@ namespace MazeGenerator
 
 			Add(message);
 
-			var width = 250;
-			var height = 250;
-
-			var bbox = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(width - 1, height - 1).GetBoundingBox());
+			var bbox = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(_width - 1, _height - 1).GetBoundingBox());
 			var collisionEngine = new CollisionEngine(bbox, message);
 			Add(collisionEngine);
 
-			var world = new ChunkManager(RenderContext, message, collisionEngine, width, height);
+			var world = new ChunkManager(RenderContext, message, collisionEngine, _width, _height);
 
 			const int playerHeight = 2;
 
@@ -163,16 +159,6 @@ namespace MazeGenerator
 			if (KeyboardManager.IsKeyPressed(_toggleCamera))
 			{
 				ToggleCameraMode();
-				UpdateDetails();
-			}
-			if (KeyboardManager.IsKeyPressed(_toggleCellMerging))
-			{
-				ToggleCellMerging();
-				UpdateDetails();
-			}
-			if (KeyboardManager.IsKeyPressed(_toggleCulling))
-			{
-				ToggleCulling();
 				UpdateDetails();
 			}
 			var time = (float)dt.ElapsedGameTime.TotalMilliseconds / 1000f;
@@ -243,21 +229,9 @@ namespace MazeGenerator
 			_camera.SetRotation(h, v);
 		}
 
-		private void ToggleCellMerging()
-		{
-			_cellMerging = !_cellMerging;
-		}
-
-		private void ToggleCulling()
-		{
-			_culling = !_culling;
-		}
-
 		private void UpdateDetails()
 		{
-			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} " + Environment.NewLine +
-			           $"Cell vertex merging ({_toggleCellMerging}): {(_cellMerging ? "On" : "Off")}" + Environment.NewLine +
-			           $"Culling ({_toggleCulling}): {(_culling ? "On" : "Off")}";
+			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} ";
 		}
 
 		#endregion

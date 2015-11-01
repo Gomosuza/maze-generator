@@ -9,7 +9,9 @@ namespace MazeGenerator
 
 		private static void Main(string[] args)
 		{
-			using (var game = new MazeGenerator3DGame())
+			var width = 100;
+			var height = 100;
+			using (var game = new MazeGenerator3DGame(width, height))
 			{
 				game.Run();
 			}
