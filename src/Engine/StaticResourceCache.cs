@@ -147,7 +147,9 @@ namespace Engine
 				if (resourceName.Contains("\\"))
 				{
 					// delete as many empty dirs as we just had to create
-					DeleteEmptyDirectories(Path.GetDirectoryName(tempFile), resourceName.Count(c => c == '\\'));
+					// +1 because we may create the "Content" directory as well, which may not exist if the game in question doesn't have any custom content
+					var dirCountToDelete = resourceName.Count(c => c == '\\') + 1;
+					DeleteEmptyDirectories(Path.GetDirectoryName(tempFile), dirCountToDelete);
 				}
 			}
 			finally
@@ -161,8 +163,8 @@ namespace Engine
 			{
 				throw new ContentLoadException($"Engine could not load an internal resource. '{resourceName}'. See inner exception for more details.",
 					new FileLoadException($"Failure while trying to load embedded resource '{resourceName}'. Tried to copy it to '{tempFile}' " +
-					                      $"but either path is in use or not part of the content directory. ContentManager said it loads from '{content.RootDirectory}'." +
-					                      $"Assumed this is relative to: {root}."));
+										  $"but either path is in use or not part of the content directory. ContentManager said it loads from '{content.RootDirectory}'." +
+										  $"Assumed this is relative to: {root}."));
 			}
 			return font;
 		}
