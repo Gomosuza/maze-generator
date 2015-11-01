@@ -32,6 +32,7 @@ namespace MazeGenerator
 		private readonly Keys _right;
 		private readonly Keys _sprint;
 		private readonly Keys _toggleCamera;
+		private readonly Keys _exit;
 		private readonly Keys _up;
 
 		private readonly int _width;
@@ -80,7 +81,8 @@ namespace MazeGenerator
 				!ReadKey(fileName, "input", "Down", out _down) ||
 				!ReadKey(fileName, "input", "Sprint", out _sprint) ||
 				!ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
-				!ReadKey(fileName, "options", "GenerateMaze", out _generateMaze))
+				!ReadKey(fileName, "options", "GenerateMaze", out _generateMaze) ||
+				!ReadKey(fileName, "options", "Exit", out _exit))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -151,13 +153,6 @@ namespace MazeGenerator
 				return;
 			}
 			base.Update(gameTime);
-#if DEBUG
-			// quickly exit while debugging
-			if (KeyboardManager.IsKeyDown(Keys.Escape))
-			{
-				Exit();
-			}
-#endif
 			HandleInput(gameTime);
 		}
 
@@ -178,6 +173,10 @@ namespace MazeGenerator
 			{
 				ToggleCameraMode();
 				UpdateDetails();
+			}
+			if (KeyboardManager.IsKeyPressed(_exit))
+			{
+				Exit();
 			}
 			if (KeyboardManager.IsKeyPressed(_generateMaze))
 			{
@@ -260,7 +259,8 @@ namespace MazeGenerator
 		private void UpdateDetails()
 		{
 			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} " + Environment.NewLine +
-					   $"Press {_generateMaze} to generate a new maze";
+					   $"Press {_generateMaze} to generate a new maze" + Environment.NewLine +
+					   $"Press {_exit} to exit";
 		}
 
 		#endregion
