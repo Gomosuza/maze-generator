@@ -26,6 +26,7 @@ namespace MazeGenerator
 		private readonly Keys _backward;
 		private readonly Keys _down;
 		private readonly Keys _forward;
+		private readonly Keys _generateMaze;
 		private readonly int _height;
 		private readonly Keys _left;
 		private readonly Keys _right;
@@ -72,13 +73,14 @@ namespace MazeGenerator
 			IsMouseVisible = false;
 
 			if (!ReadKey(fileName, "input", "Forward", out _forward) ||
-			    !ReadKey(fileName, "input", "Left", out _left) ||
-			    !ReadKey(fileName, "input", "Backward", out _backward) ||
-			    !ReadKey(fileName, "input", "Right", out _right) ||
-			    !ReadKey(fileName, "input", "Up", out _up) ||
-			    !ReadKey(fileName, "input", "Down", out _down) ||
-			    !ReadKey(fileName, "input", "Sprint", out _sprint) ||
-			    !ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera))
+				!ReadKey(fileName, "input", "Left", out _left) ||
+				!ReadKey(fileName, "input", "Backward", out _backward) ||
+				!ReadKey(fileName, "input", "Right", out _right) ||
+				!ReadKey(fileName, "input", "Up", out _up) ||
+				!ReadKey(fileName, "input", "Down", out _down) ||
+				!ReadKey(fileName, "input", "Sprint", out _sprint) ||
+				!ReadKey(fileName, "options", "ToggleCamera", out _toggleCamera) ||
+				!ReadKey(fileName, "options", "GenerateMaze", out _generateMaze))
 			{
 				throw new FileLoadException("Could not read keys from ini file. Make sure they are valid");
 			}
@@ -105,27 +107,41 @@ namespace MazeGenerator
 
 			Add(message);
 
-			var bbox = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(_width - 1, _height - 1).GetBoundingBox());
-			var collisionEngine = new CollisionEngine(bbox);
-			Add(collisionEngine);
-
-			var world = new ChunkManager(RenderContext, message, collisionEngine, _width, _height);
-
-			const int playerHeight = 2;
-
-			// position the player in the center of the starting cell
-			var start = world.GetStartCell().GetBoundingBox();
-			var center = (start.Min + start.Max) / 2f;
-			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(center.X, playerHeight, center.Z), FirstPersonCamera.FirstPersonMode.Person);
-
-			var player = new Player(_camera);
-			Add(player);
-			collisionEngine.Add(player);
-
-			Add(world);
 			Add(new GridAxis(RenderContext, true));
 
+			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, Vector3.Zero, FirstPersonCamera.FirstPersonMode.Person);
+
+			var player = new Player(_camera);
+
+			GenerateMaze(player);
+			Add(player);
+
+			var chunkManager = GetComponents<ChunkManager>().First();
+			// for first maze, place player at the starting cell
+
+			const int playerHeight = 2;
+			// position the player in the center of the starting cell
+			var start = chunkManager.GetStartCell().GetBoundingBox();
+			var center = (start.Min + start.Max) / 2f;
+			var s = new Vector3(center.X, playerHeight, center.Z);
+
+			_camera.SetPosition(s);
+
 			UpdateDetails();
+		}
+
+		private void GenerateMaze(Player player)
+		{
+			var message = GetComponents<DebugMessageBuilder>().First();
+			var entireMaze = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(_width - 1, _height - 1).GetBoundingBox());
+			var collisionEngine = new CollisionEngine(entireMaze);
+			Add(collisionEngine);
+
+			var chunkManager = new ChunkManager(RenderContext, message, collisionEngine, _width, _height);
+
+			collisionEngine.Add(player);
+
+			Add(chunkManager);
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -162,6 +178,19 @@ namespace MazeGenerator
 			{
 				ToggleCameraMode();
 				UpdateDetails();
+			}
+			if (KeyboardManager.IsKeyPressed(_generateMaze))
+			{
+				// clear old
+				Remove(GetComponents<CollisionEngine>().First());
+				Remove(GetComponents<ChunkManager>().First());
+
+				var pl = GetComponents<Player>().First();
+				GenerateMaze(pl);
+
+				// player must be updated after the other components, therefore remove it and add it again
+				Remove(pl);
+				Add(pl);
 			}
 			var time = (float)dt.ElapsedGameTime.TotalMilliseconds / 1000f;
 			var delta = MouseManager.PositionDelta;
@@ -230,7 +259,8 @@ namespace MazeGenerator
 
 		private void UpdateDetails()
 		{
-			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} ";
+			_details = $"Current camera mode ({_toggleCamera}): {_camera.Mode} " + Environment.NewLine +
+					   $"Press {_generateMaze} to generate a new maze";
 		}
 
 		#endregion
