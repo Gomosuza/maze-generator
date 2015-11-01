@@ -61,9 +61,11 @@
     <Compile Include="Generator\GrowingTreeMazeGenerator.cs" />
     <Compile Include="MazeChunk.cs" />
     <Compile Include="MazeGenerator3DGame.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldScene.cs" />
+    <Compile Include="Wall.cs" />
+    <Compile Include="ChunkManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="settings.ini">

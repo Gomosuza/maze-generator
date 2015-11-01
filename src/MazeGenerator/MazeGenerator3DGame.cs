@@ -1,12 +1,14 @@
 using System;
 using System.IO;
 using System.Linq;
+using MazeGenerator.Generator;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Core;
 using Core.Extensions;
 using Engine;
 using Engine.Diagnostics;
+using Engine.Physics.Collision;
 using Engine.Rendering;
 using Engine.Rendering.Components;
 
@@ -102,7 +104,15 @@ namespace MazeGenerator
 			var message = new DebugMessageBuilder(Corner.TopRight, Color.Black);
 
 			Add(message);
-			var world = new WorldScene(RenderContext, message);
+
+			var width = 250;
+			var height = 250;
+
+			var bbox = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(width - 1, height - 1).GetBoundingBox());
+			var collisionEngine = new CollisionEngine(bbox, message);
+			Add(collisionEngine);
+
+			var world = new ChunkManager(RenderContext, message, collisionEngine, width, height);
 
 			const int playerHeight = 2;
 
@@ -110,6 +120,9 @@ namespace MazeGenerator
 			var start = world.GetStartCell().GetBoundingBox();
 			var center = (start.Min + start.Max) / 2f;
 			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(center.X, playerHeight, center.Z), FirstPersonCamera.FirstPersonMode.Person);
+
+			var player = new Player(_camera);
+			collisionEngine.Add(player);
 
 			Add(world);
 			Add(new GridAxis(RenderContext, true));
