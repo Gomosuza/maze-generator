@@ -20,13 +20,18 @@ namespace Engine.Physics.Collision
 		#region Methods
 
 		/// <summary>
-		/// Called to check whether the current instance collides with the other instance.
+		/// Called to check whether the current instance actually collides with the other instance.
 		/// This is only called once the <see cref="BoundingBox"/> check indicated that collision has occured
-		/// and is intended to check the exact meshes for collision. 
+		/// and is intended to check the exact meshes for collision.
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
 		bool Collides(ICollidable other);
+
+		/// <summary>
+		/// Called if <see cref="Collides"/> reported true.
+		/// </summary>
+		void CollisionResponse(ICollidable other);
 
 		#endregion
 	}

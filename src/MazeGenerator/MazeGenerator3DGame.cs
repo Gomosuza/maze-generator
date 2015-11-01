@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using MazeGenerator.Entities;
 using MazeGenerator.Generator;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -105,7 +106,7 @@ namespace MazeGenerator
 			Add(message);
 
 			var bbox = BoundingBox.CreateMerged(new Cell(0, 0).GetBoundingBox(), new Cell(_width - 1, _height - 1).GetBoundingBox());
-			var collisionEngine = new CollisionEngine(bbox, message);
+			var collisionEngine = new CollisionEngine(bbox);
 			Add(collisionEngine);
 
 			var world = new ChunkManager(RenderContext, message, collisionEngine, _width, _height);
@@ -118,6 +119,7 @@ namespace MazeGenerator
 			_camera = new FirstPersonCamera(RenderContext.GraphicsDevice, new Vector3(center.X, playerHeight, center.Z), FirstPersonCamera.FirstPersonMode.Person);
 
 			var player = new Player(_camera);
+			Add(player);
 			collisionEngine.Add(player);
 
 			Add(world);
@@ -213,20 +215,17 @@ namespace MazeGenerator
 
 		private void ToggleCameraMode()
 		{
-			var h = _camera.UpDownRotation;
-			var v = _camera.LeftRightRotation;
 			switch (_camera.Mode)
 			{
 				case FirstPersonCamera.FirstPersonMode.Plane:
-					_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Person, _camera.FarZ);
+					_camera.Mode = FirstPersonCamera.FirstPersonMode.Person;
 					break;
 				case FirstPersonCamera.FirstPersonMode.Person:
-					_camera = new FirstPersonCamera(GraphicsDevice, _camera.Position, FirstPersonCamera.FirstPersonMode.Plane, _camera.FarZ);
+					_camera.Mode = FirstPersonCamera.FirstPersonMode.Plane;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
-			_camera.SetRotation(h, v);
 		}
 
 		private void UpdateDetails()

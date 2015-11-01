@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Engine.Datastructures.Quadtree
@@ -89,34 +90,22 @@ namespace Engine.Datastructures.Quadtree
 			}
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		public List<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			if (!BoundingBox.Intersects(boundingBox))
 			{
-				yield break;
+				return new List<T>();
 			}
-			foreach (var e in _elements)
-			{
-				if (e.BoundingBox.Intersects(boundingBox))
-				{
-					yield return e;
-				}
-			}
+			return _elements.Where(e => e.BoundingBox.Intersects(boundingBox)).ToList();
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		public List<T> GetIntersectingElements(BoundingFrustum frustum)
 		{
 			if (!BoundingBox.Intersects(frustum))
 			{
-				yield break;
+				return new List<T>();
 			}
-			foreach (var e in _elements)
-			{
-				if (e.BoundingBox.Intersects(frustum))
-				{
-					yield return e;
-				}
-			}
+			return _elements.Where(e => e.BoundingBox.Intersects(frustum)).ToList();
 		}
 
 		public void Remove(T element)

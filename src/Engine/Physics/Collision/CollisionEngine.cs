@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Engine.Datastructures.Quadtree;
-using Engine.Diagnostics;
 using Engine.Input;
 using Engine.Rendering;
 
@@ -13,16 +12,14 @@ namespace Engine.Physics.Collision
 		#region Fields
 
 		private readonly List<ICollidable> _collidables;
-		private readonly DebugMessageBuilder _messageBuilder;
 		private readonly Quadtree<ICollidable> _tree;
 
 		#endregion
 
 		#region Constructors
 
-		public CollisionEngine(BoundingBox bbox, DebugMessageBuilder messageBuilder)
+		public CollisionEngine(BoundingBox bbox)
 		{
-			_messageBuilder = messageBuilder;
 			_tree = new Quadtree<ICollidable>(bbox);
 			_collidables = new List<ICollidable>();
 		}
@@ -86,8 +83,8 @@ namespace Engine.Physics.Collision
 					if (ct.Collides(current))
 					{
 						// we have a collision
-						// TODO: collision response (e.g. player walked into a wall -> back him up enough so he no longer is stuck in the wall, deflect him if he walks into it at an angle so he doesn't get stuck in it but moves along, ..)
-						_messageBuilder.AppendLine($"Collision between {current} and {ct}");
+						current.CollisionResponse(ct);
+						ct.CollisionResponse(current);
 					}
 				}
 			}

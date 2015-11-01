@@ -65,40 +65,30 @@ namespace Engine.Datastructures.Quadtree
 			}
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		public List<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			if (!BoundingBox.Intersects(boundingBox))
 			{
-				yield break;
+				return new List<T>();
 			}
-			var matches = _elements.Where(e => e.BoundingBox.Intersects(boundingBox));
-			foreach (var match in matches)
-			{
-				yield return match;
-			}
+			var matches = _elements.Where(e => e.BoundingBox.Intersects(boundingBox)).ToList();
 			var moreMatches = _children.SelectMany(c => c.GetIntersectingElements(boundingBox));
-			foreach (var match in moreMatches)
-			{
-				yield return match;
-			}
+
+			matches.AddRange(moreMatches);
+			return matches;
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		public List<T> GetIntersectingElements(BoundingFrustum frustum)
 		{
 			if (!BoundingBox.Intersects(frustum))
 			{
-				yield break;
+				return new List<T>();
 			}
-			var matches = _elements.Where(e => e.BoundingBox.Intersects(frustum));
-			foreach (var match in matches)
-			{
-				yield return match;
-			}
+			var matches = _elements.Where(e => e.BoundingBox.Intersects(frustum)).ToList();
+
 			var moreMatches = _children.SelectMany(c => c.GetIntersectingElements(frustum));
-			foreach (var match in moreMatches)
-			{
-				yield return match;
-			}
+			matches.AddRange(moreMatches);
+			return matches;
 		}
 
 		public void Remove(T element)

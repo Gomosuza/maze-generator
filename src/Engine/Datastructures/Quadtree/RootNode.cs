@@ -35,12 +35,12 @@ namespace Engine.Datastructures.Quadtree
 			_root.Add(element);
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingBox boundingBox)
+		public List<T> GetIntersectingElements(BoundingBox boundingBox)
 		{
 			return _root.GetIntersectingElements(boundingBox);
 		}
 
-		public IEnumerable<T> GetIntersectingElements(BoundingFrustum frustum)
+		public List<T> GetIntersectingElements(BoundingFrustum frustum)
 		{
 			return _root.GetIntersectingElements(frustum);
 		}

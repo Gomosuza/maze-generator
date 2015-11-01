@@ -81,7 +81,7 @@ namespace Engine.Rendering
 		/// <summary>
 		/// Gets the mode of the camera.
 		/// </summary>
-		public FirstPersonMode Mode { get; }
+		public FirstPersonMode Mode { get; set; }
 
 		public Vector3 Position { get; private set; }
 
@@ -143,6 +143,12 @@ namespace Engine.Rendering
 
 			Vector3 tmp = _device.Viewport.Project(world, Projection, View, Matrix.Identity);
 			return new Vector2(tmp.X, tmp.Y);
+		}
+
+		public void SetPosition(Vector3 position)
+		{
+			Position = position;
+			_dirty = true;
 		}
 
 		/// <summary>

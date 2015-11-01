@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MazeGenerator.Entities;
 using MazeGenerator.Generator;
 using Microsoft.Xna.Framework;
 using Engine;
