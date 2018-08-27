@@ -176,7 +176,7 @@ namespace MazeGenerator
 			}
 			if (KeyboardManager.IsKeyPressed(_exit))
 			{
-				Exit();
+				Environment.Exit(0);
 			}
 			if (KeyboardManager.IsKeyPressed(_generateMaze))
 			{
